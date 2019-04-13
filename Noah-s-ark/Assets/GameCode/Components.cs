@@ -3,6 +3,11 @@ using Unity.Entities;
 using System;
 using Unity.Mathematics;
 
+public struct VectorField : IComponentData
+{
+    //public Vector2[] Value;
+}
+
 public struct PlayerPosition : IComponentData
 {
     public int Position;
@@ -53,6 +58,11 @@ public struct TimerComponent : IComponentData
     public BlittableBool DeleteOnEnd;
 }
 
+public struct BoatComponent : IComponentData
+{
+
+}
+
 public struct PlayerComponent : IComponentData
 {
 
@@ -61,6 +71,12 @@ public struct PlayerComponent : IComponentData
 public struct BulletComponent : IComponentData
 {
 
+}
+
+public struct CircleComponent : IComponentData
+{
+    public float3 Position;
+    public float Radius;
 }
 
 public struct GameOverComponent : IComponentData
