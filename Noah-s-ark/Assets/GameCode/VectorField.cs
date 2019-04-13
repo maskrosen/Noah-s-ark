@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Unity.Mathematics;
 
 public class VectorField
 {
     private static VectorField instance;
-
 
     /*
      * A 2D array of Vector2, stored as one for PERFORMANCE MAXIMUS. Access with field[i * Constants.VECTORFIELD_SIZE + j]
@@ -19,11 +19,18 @@ public class VectorField
         {
             for (int j = 0; j < Constants.VECTORFIELD_SIZE; j++)
             {
-                instance.field[i * Constants.VECTORFIELD_SIZE + j] = Vector2.up;
+                instance.field[i * Constants.VECTORFIELD_SIZE + j] = defaultVectorField(i - Constants.VECTORFIELD_SIZE/2, j - Constants.VECTORFIELD_SIZE / 2);
             }
         }
 
     }
+
+    private static Vector2 defaultVectorField(float i, float j)
+    {
+        //return new Vector2(i * i / 3 - j, i * i / 3 - j) / Constants.VECTORFIELD_SIZE;
+        return new Vector2(-i + 2.5f * j+1, 2.5f * i - 1.27f * j+1)/3;
+    }
+
 
     public static VectorField Get()
     {
@@ -37,5 +44,17 @@ public class VectorField
     private VectorField(Vector2[] field)
     {
         this.field = field;
+    }
+
+    public Vector2 VectorAtPos(float3 position)
+    {
+        float fi = Mathf.Clamp(position.x + Constants.VECTORFIELD_SIZE / 2, 0, Constants.VECTORFIELD_SIZE-1);
+        float fj = Mathf.Clamp(position.z + Constants.VECTORFIELD_SIZE / 2, 0, Constants.VECTORFIELD_SIZE-1);
+
+        int i = (int)fi;
+        int j = (int)fj;
+
+        //todo lerp samples based fractional difference
+        return field[i * Constants.VECTORFIELD_SIZE + j];
     }
 }
