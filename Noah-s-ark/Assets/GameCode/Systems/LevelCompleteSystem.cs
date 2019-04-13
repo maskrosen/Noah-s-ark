@@ -5,16 +5,23 @@ using UnityEngine.UI;
 
 public class LevelCompleteSystem : ComponentSystem
 {
-    public struct LevelCompleteData
+    public struct GoalData
     {
         public readonly int Length;
-        public ComponentDataArray<LevelCompleteComponent> LevelComplete;
+        public ComponentDataArray<CircleComponent> Circle;
+    }
+
+    public struct BoatData
+    {
+        public readonly int Length;
+        public ComponentDataArray<Position> Position;
     }
 
     public Text StatusText;
 
-    [Inject] private LevelCompleteData levelCompleteData;
-    
+    [Inject] private GoalData goalData;
+    [Inject] private BoatData boatData;
+
     public void SetupGameObjects()
     {
         StatusText = GameObject.Find("GameStatusText").GetComponent<Text>();
@@ -25,9 +32,16 @@ public class LevelCompleteSystem : ComponentSystem
         float dt = Time.deltaTime;
         var settings = Bootstrap.Settings;
 
-        for (int i = 0; i < levelCompleteData.Length; i++)
+        for (int i = 0; i < goalData.Length; i++)
         {
-            StatusText.text = "You got pwnd in the butt";
+            for (int j = 0; j < boatData.Length; j++)
+            {
+                var boatPos = boatData.Position[j].Value;
+                var goalCircle = goalData.Circle;
+                Debug.Log("LOL!");
+                //if (boatData.Position[j])
+                //StatusText.text = "You got pwnd in the butt";
+            }
         }
     }
 }

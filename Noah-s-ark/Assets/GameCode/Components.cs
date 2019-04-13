@@ -68,9 +68,10 @@ public struct BulletComponent : IComponentData
 
 }
 
-public struct LevelCompleteComponent : IComponentData
+public struct CircleComponent : IComponentData
 {
-
+    public float3 Position;
+    public float Radius;
 }
 
 public struct GameOverComponent : IComponentData
