@@ -12,10 +12,9 @@ public class CameraSystem : ComponentSystem
         public ComponentDataArray<BoatComponent> BoatComponent;
         public ComponentDataArray<Position> BoatPosition;
         public ComponentDataArray<VelocityComponent> Velocity;
+        public ComponentDataArray<Rotation> Rotation;
     }
 
-    private Vector3 boatPrevPos = new Vector3(0f, 0f, 0f);
-    private const float distance = 25f;
 
     [Inject] private CameraData cameraData;
 
@@ -38,6 +37,7 @@ public class CameraSystem : ComponentSystem
             var z = cameraData.BoatPosition[i].Value.z;
             
             var boatPos = new Vector3(x, y, z);
+            var rotationVector = ((Quaternion)(cameraData.Rotation[i].Value)).normalized * Vector3.back;
 
             /* 
              * PLEASE OBSERVE.
@@ -60,13 +60,17 @@ public class CameraSystem : ComponentSystem
             //Camera.main.transform.position = new Vector3(20, y + 10, z + 12);
 
             /* Third person view from behind the boat. */
-            var boatMoveDir = boatPos - boatPrevPos;
-            if (boatMoveDir != Vector3.zero)
-            {
-                Camera.main.transform.position = boatPos - boatMoveDir.normalized * distance + Vector3.up * 10f;
-                Camera.main.transform.LookAt(boatPos);
-                boatPrevPos = boatPos;
-            }
+            var newPos = rotationVector * settings.cameraDistance + Vector3.up * settings.cameraHeight;
+            Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, newPos, Time.deltaTime * settings.cameraSpeed);
+
+            var oldRot = Camera.main.transform.rotation;
+            var lookAtVector = boatPos;
+            lookAtVector.z *= 1f;
+
+            Camera.main.transform.LookAt(lookAtVector);
+            var newRot = Camera.main.transform.rotation;
+            Camera.main.transform.rotation = Quaternion.Slerp(oldRot, newRot, Time.deltaTime * settings.cameraSpeed);
+
 
             /* GENERAL SETTING: 
              * Make the camera look towards the Boat (current camera position, Boat centered in view). 
