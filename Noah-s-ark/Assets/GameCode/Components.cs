@@ -56,6 +56,7 @@ public struct TimerComponent : IComponentData
 
 public struct ParticleComponent : IComponentData
 {
+    public float LifeTimeLeft;
 }
     
 public struct BoatComponent : IComponentData
