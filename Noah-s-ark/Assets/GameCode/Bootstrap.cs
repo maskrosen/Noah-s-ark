@@ -18,7 +18,7 @@ public sealed class Bootstrap
     public static EntityArchetype BoatArchetype;
 
     public static RenderMesh PlayerLook;
-    public static RenderMesh BulletLook;
+    public static RenderMesh BoatLook;
 
     public static Settings Settings;
 
@@ -40,7 +40,7 @@ public sealed class Bootstrap
 
         GameOverArchetype = entityManager.CreateArchetype(typeof(GameOverComponent));
 
-        BoatArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(VelocityComponent), typeof(TurnRateComponent));
+        BoatArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(VelocityComponent), typeof(TurnRateComponent), typeof(Scale));
 
 
     }
@@ -54,7 +54,7 @@ public sealed class Bootstrap
             return;
 
         PlayerLook = GetLookFromPrototype("PlayerRenderPrototype");
-        BulletLook = GetLookFromPrototype("BulletRenderPrototype");
+        BoatLook = GetLookFromPrototype("BoatRenderPrototype");
 
         World.Active.GetOrCreateManager<GameOverSystem>().SetupGameObjects();
 
@@ -69,7 +69,8 @@ public sealed class Bootstrap
         Entity gameState = entityManager.CreateEntity(GameStateArchetype);
 
         Entity boat = entityManager.CreateEntity(BoatArchetype);
-        entityManager.AddSharedComponentData(boat, BulletLook);
+        entityManager.AddSharedComponentData(boat, BoatLook);
+        entityManager.SetComponentData(boat, new Scale { Value = new float3(100.0f, 100.0f, 100.0f) });
         entityManager.SetComponentData(boat, new Position { Value = new float3(0.0f, 0.0f, 0.0f) });
         entityManager.SetComponentData(boat, new Rotation { Value = /*quaternion.Euler(-90f, 0, 0)*/   quaternion.identity });
         entityManager.SetComponentData(boat, new TurnRateComponent { TurnRate = 30 });
