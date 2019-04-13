@@ -74,7 +74,7 @@ public sealed class Bootstrap
         entityManager.SetComponentData(boat, new Position { Value = new float3(0.0f, 0.0f, 0.0f) });
         entityManager.SetComponentData(boat, new Rotation { Value = /*quaternion.Euler(-90f, 0, 0)*/   quaternion.identity });
         entityManager.SetComponentData(boat, new TurnRateComponent { TurnRate = 30 });
-        entityManager.SetComponentData(boat, new VelocityComponent { Velocity =  new float3(0, 0, 10)});
+        entityManager.SetComponentData(boat, new VelocityComponent { Velocity =  new float3(0, 0, 5)});
 
     
         /*
