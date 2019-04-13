@@ -65,10 +65,13 @@ public sealed class Bootstrap
             var velocity = random.NextFloat3() * 4f - 2;
             velocity.y = 0;
 
+            float lifeTime = random.NextFloat() * Constants.PARTICLE_LIFETIME;
+
             entityManager.SetComponentData(particle, new Scale { Value = new float3(0.2f)});
             entityManager.SetComponentData(particle, new Position { Value = position });
             entityManager.SetComponentData(particle, new Rotation { Value = quaternion.identity });
             entityManager.SetComponentData(particle, new VelocityComponent { Value = new float3(1, 0, 0) });
+            entityManager.SetComponentData(particle, new ParticleComponent { LifeTimeLeft = lifeTime});
         }
     }
 
