@@ -56,7 +56,7 @@ public sealed class Bootstrap
     {
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
         var random = new Unity.Mathematics.Random(835483957);
-        for (int i = 0; i < 5000; i++)
+        for (int i = 0; i < 1000; i++)
         {            
             Entity particle = entityManager.CreateEntity(WaterParticleArchetype);
             entityManager.AddSharedComponentData(particle, WaterParticleLook);
@@ -65,10 +65,20 @@ public sealed class Bootstrap
             var velocity = random.NextFloat3() * 4f - 2;
             velocity.y = 0;
 
-            entityManager.SetComponentData(particle, new Scale { Value = new float3(0.2f)});
+            float lifeTime = random.NextFloat() * Constants.PARTICLE_LIFETIME;
+
+            float scaleX = random.NextFloat() * .3f + 0.3f;
+            float scaleZ = random.NextFloat() * 1.5f + 0.8f;
+
+            var angle = random.NextFloat() * 180;
+
+            var q = quaternion.RotateY(angle);
+
+            entityManager.SetComponentData(particle, new Scale { Value = new float3(scaleX, 0.1f, scaleZ)});
             entityManager.SetComponentData(particle, new Position { Value = position });
-            entityManager.SetComponentData(particle, new Rotation { Value = quaternion.identity });
+            entityManager.SetComponentData(particle, new Rotation { Value = q });
             entityManager.SetComponentData(particle, new VelocityComponent { Value = new float3(1, 0, 0) });
+            entityManager.SetComponentData(particle, new ParticleComponent { LifeTimeLeft = lifeTime});
         }
     }
 

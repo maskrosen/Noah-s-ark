@@ -27,6 +27,8 @@ public class VectorField
     private static Vector2 defaultVectorField(float i, float j)
     {
         Vector2 v = new Vector2(i + 5, j + 5) / Constants.VECTORFIELD_SIZE;
+        if (v.magnitude == 0)
+            return new Vector2(0,0);
         v += new Vector2(-v.y, v.x) * 3/v.magnitude;
         return v;
     }
