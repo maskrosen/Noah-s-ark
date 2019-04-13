@@ -9,12 +9,14 @@ public class LevelCompleteSystem : ComponentSystem
     {
         public readonly int Length;
         public ComponentDataArray<CircleComponent> Circle;
+        public ComponentDataArray<GoalComponent> GoalComponent;
     }
 
     public struct BoatData
     {
         public readonly int Length;
         public ComponentDataArray<Position> Position;
+        public ComponentDataArray<BoatComponent> BoatComponent;
     }
 
     public Text StatusText;
@@ -45,9 +47,8 @@ public class LevelCompleteSystem : ComponentSystem
                 if (distanceSq < goalCircle.Radius*goalCircle.Radius)
                 {
                     Debug.Log("Goal reached!!!");
+                    StatusText.text = "You got pwnd in the butt";
                 }
-                //if (boatData.Position[j])
-                //StatusText.text = "You got pwnd in the butt";
             }
         }
     }

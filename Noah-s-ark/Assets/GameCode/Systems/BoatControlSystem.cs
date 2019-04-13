@@ -36,19 +36,23 @@ public class BoatControlSystem : ComponentSystem
             boatData.Rotation[i] = new Rotation { Value = newRot };
             
             var velocityDirection = newRot * Vector3.forward;
-            var velocityVector = new Vector3(velocity.Velocity.x, velocity.Velocity.y, velocity.Velocity.z);
+
+            //
+
+            var velocityVector = new Vector3(velocity.Value.x, velocity.Value.y, velocity.Value.z);
+            
             velocityDirection *= velocityVector.magnitude;
 
             var newVelocity = new float3(velocityDirection.x, velocityDirection.y, velocityDirection.z);
             boatData.Velocity[i] = new VelocityComponent { Velocity = newVelocity };
             */
-
+            
             Vector2 vel = VectorField.Get().VectorAtPos(position.Value);
             var newVelocity = new float3(vel.x, 0, vel.y);
-            boatData.Velocity[i] = new VelocityComponent { Velocity = newVelocity };
+            boatData.Velocity[i] = new VelocityComponent { Value = newVelocity };
 
             boatData.Rotation[i] = new Rotation { Value = Quaternion.LookRotation(newVelocity, Vector3.up) };
-
+            
         }
     }
 }

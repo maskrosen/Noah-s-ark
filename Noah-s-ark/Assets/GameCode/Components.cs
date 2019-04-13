@@ -39,7 +39,7 @@ public struct BotState : IComponentData
 
 public struct VelocityComponent : IComponentData
 {
-    public float3 Velocity; 
+    public float3 Value; 
 }
 
 public struct TurnRateComponent : IComponentData
@@ -54,7 +54,15 @@ public struct TimerComponent : IComponentData
     public BlittableBool DeleteOnEnd;
 }
 
+public struct ParticleComponent : IComponentData
+{
+}
+    
 public struct BoatComponent : IComponentData
+{
+}
+
+public struct GoalComponent : IComponentData
 {
 
 }
