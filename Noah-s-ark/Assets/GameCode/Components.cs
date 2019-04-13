@@ -53,6 +53,11 @@ public struct TimerComponent : IComponentData
     public BlittableBool DeleteOnEnd;
 }
 
+public struct BoatComponent : IComponentData
+{
+
+}
+
 public struct PlayerComponent : IComponentData
 {
 

@@ -40,8 +40,7 @@ public sealed class Bootstrap
 
         GameOverArchetype = entityManager.CreateArchetype(typeof(GameOverComponent));
 
-        BoatArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(VelocityComponent), typeof(TurnRateComponent), typeof(Scale));
-
+        BoatArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(VelocityComponent), typeof(TurnRateComponent), typeof(Scale), typeof(BoatComponent));
 
     }
 
@@ -52,6 +51,9 @@ public sealed class Bootstrap
         Settings = settingsGO?.GetComponent<Settings>();
         if (!Settings)
             return;
+
+        Camera.main.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+        Camera.main.transform.position = new Vector3(0f, 0f, 0f);
 
         PlayerLook = GetLookFromPrototype("PlayerRenderPrototype");
         BoatLook = GetLookFromPrototype("BoatRenderPrototype");
