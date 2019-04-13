@@ -3,6 +3,11 @@ using Unity.Entities;
 using System;
 using Unity.Mathematics;
 
+public struct VectorField : IComponentData
+{
+    public Vector2[] Value;
+}
+
 public struct PlayerPosition : IComponentData
 {
     public int Position;

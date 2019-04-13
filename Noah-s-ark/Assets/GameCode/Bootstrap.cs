@@ -8,14 +8,14 @@ using Unity.Mathematics;
 
 public sealed class Bootstrap
 {
-
-
+    
     public static EntityArchetype PlayerArchetype;
     public static EntityArchetype BotArchetype;
     public static EntityArchetype GameStateArchetype;
     public static EntityArchetype BulletArchetype;
     public static EntityArchetype GameOverArchetype;
     public static EntityArchetype BoatArchetype;
+    public static EntityArchetype VectorFieldArchetype;
 
     public static RenderMesh PlayerLook;
     public static RenderMesh BulletLook;
@@ -42,8 +42,8 @@ public sealed class Bootstrap
 
         BoatArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(VelocityComponent), typeof(TurnRateComponent));
 
-
-    }
+        VectorFieldArchetype = entityManager.CreateArchetype(typeof(VectorField));
+}
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     public static void InitializeWithScene()
@@ -57,16 +57,18 @@ public sealed class Bootstrap
         BulletLook = GetLookFromPrototype("BulletRenderPrototype");
 
         World.Active.GetOrCreateManager<GameOverSystem>().SetupGameObjects();
-
         NewGame();
     }
 
 
     public static void NewGame()
     {
-        var entityManager = World.Active.GetOrCreateManager<EntityManager>();              
+        var entityManager = World.Active.GetOrCreateManager<EntityManager>();
 
         Entity gameState = entityManager.CreateEntity(GameStateArchetype);
+
+        Entity VectorField = entityManager.CreateEntity(VectorFieldArchetype);
+        entityManager.SetComponentData(VectorField, new VectorField {Value = new Vector2[Constants.VECTORFIELD_SIZE* Constants.VECTORFIELD_SIZE] });
 
         Entity boat = entityManager.CreateEntity(BoatArchetype);
         entityManager.AddSharedComponentData(boat, BulletLook);
@@ -74,7 +76,6 @@ public sealed class Bootstrap
         entityManager.SetComponentData(boat, new Rotation { Value = /*quaternion.Euler(-90f, 0, 0)*/   quaternion.identity });
         entityManager.SetComponentData(boat, new TurnRateComponent { TurnRate = 30 });
         entityManager.SetComponentData(boat, new VelocityComponent { Velocity =  new float3(0, 0, 10)});
-
     
         /*
 
