@@ -17,7 +17,8 @@ public sealed class Bootstrap
     public static EntityArchetype WaterParticleArchetype;
     public static EntityArchetype GoalArchetype;
 
-    public static RenderMesh PlayerLook;
+    public static RenderMesh FoxLook;
+    public static RenderMesh BunnyLook;
     public static RenderMesh BoatLook;
     public static RenderMesh WaterParticleLook;
 
@@ -51,6 +52,7 @@ public sealed class Bootstrap
         WaterParticleArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(Scale), typeof(VelocityComponent), typeof(ParticleComponent));
 
         GoalArchetype = entityManager.CreateArchetype(typeof(CircleComponent));
+        GoalArchetype = entityManager.CreateArchetype(typeof(CircleComponent), typeof(Position), typeof(Rotation), typeof(Scale));
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -61,11 +63,12 @@ public sealed class Bootstrap
         if (!Settings)
             return;
 
-        PlayerLook = GetLookFromPrototype("PlayerRenderPrototype");
+        FoxLook = GetLookFromPrototype("FoxRenderPrototype");
+        BunnyLook = GetLookFromPrototype("BunnyRenderPrototype");
         BoatLook = GetLookFromPrototype("BoatRenderPrototype");
         WaterParticleLook = GetLookFromPrototype("WaterParticleRenderPrototype");
 
-        World.Active.GetOrCreateManager<GameOverSystem>().SetupGameObjects();
+        World.Active.GetOrCreateManager<LevelCompleteSystem>().SetupGameObjects();
         NewGame();
     }
 
@@ -105,9 +108,18 @@ public sealed class Bootstrap
 
         SpawnParticles();
     
-        /*
 
         Entity goal = entityManager.CreateEntity(GoalArchetype);
+        entityManager.AddSharedComponentData(goal, FoxLook);
+        entityManager.SetComponentData(goal, new Scale { Value = new float3(2000.0f, 2000.0f, 2000.0f) });
+        /*
+         //When we have multiple levels, the bunny can be used as well. scale with 100
+         entityManager.AddSharedComponentData(goal, BunnyLook);
+         entityManager.SetComponentData(goal, new Scale { Value = new float3(100.0f, 100.0f, 100.0f) });
+        */
+        entityManager.SetComponentData(goal, new Position { Value = new float3(0.0f, 0.0f, 0.0f) });
+        entityManager.SetComponentData(goal, new Rotation { Value = /*quaternion.Euler(-90f, 0, 0)*/
+        quaternion.identity });
         entityManager.SetComponentData(goal, new CircleComponent { Position = new float3(10, 0, 7), Radius = 5 });
 
         /*
