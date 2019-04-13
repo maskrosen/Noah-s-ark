@@ -49,6 +49,7 @@ public class WaterParticleSystem : ComponentSystem
 
             particleData.Position[i] = position;
 
+            /*
             int x = (int)position.Value.x + Constants.WORLD_VECTORFIELD_OFFSET;
             int y = (int)position.Value.z + Constants.WORLD_VECTORFIELD_OFFSET;
 
@@ -61,14 +62,16 @@ public class WaterParticleSystem : ComponentSystem
             int vectorFieldIndex = x * Constants.VECTORFIELD_SIZE + y;
 
             var vector = VectorField.Get().field[vectorFieldIndex];
-
+            
             var velocityDirection = new float3(vector.x, 0, vector.y);
 
             velocity.Value = velocityDirection * Utils.Float3Magnitude(velocity.Value);
-
+            
             particleData.Velocity[i] = velocity;
-
-
+            */
+            Vector2 vel = VectorField.Get().VectorAtPos(position.Value);
+            var newVelocity = new float3(vel.x, 0, vel.y);
+            particleData.Velocity[i] = new VelocityComponent { Value = newVelocity };
         }
     }
 }

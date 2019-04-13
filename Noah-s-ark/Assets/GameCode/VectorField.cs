@@ -22,13 +22,14 @@ public class VectorField
                 instance.field[i * Constants.VECTORFIELD_SIZE + j] = defaultVectorField(i - Constants.VECTORFIELD_SIZE/2, j - Constants.VECTORFIELD_SIZE / 2);
             }
         }
-
     }
 
     private static Vector2 defaultVectorField(float i, float j)
     {
-        //return new Vector2(i * i / 3 - j, i * i / 3 - j) / Constants.VECTORFIELD_SIZE;
-        return new Vector2(-i + 2.5f * j+1, 2.5f * i - 1.27f * j+1)/3;
+        
+        Vector2 v = new Vector2(i + 5, j + 5) / Constants.VECTORFIELD_SIZE;
+        v += new Vector2(-v.y, v.x) * 3/v.magnitude;
+        return v;
     }
 
 
@@ -53,6 +54,8 @@ public class VectorField
 
         int i = (int)fi;
         int j = (int)fj;
+
+        //interpolate
 
         //todo lerp samples based fractional difference
         return field[i * Constants.VECTORFIELD_SIZE + j];
