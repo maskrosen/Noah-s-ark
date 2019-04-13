@@ -39,7 +39,7 @@ public struct BotState : IComponentData
 
 public struct VelocityComponent : IComponentData
 {
-    public float3 Velocity; 
+    public float3 Value; 
 }
 
 public struct TurnRateComponent : IComponentData

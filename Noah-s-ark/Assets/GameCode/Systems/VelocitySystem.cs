@@ -27,7 +27,7 @@ public class VelocitySystem : ComponentSystem
             var velocity = moveData.Velocity[i];
             var position = moveData.Position[i];
             
-            position.Value += velocity.Velocity * dt;
+            position.Value += velocity.Value * dt;
 
             moveData.Position[i] = position;
             

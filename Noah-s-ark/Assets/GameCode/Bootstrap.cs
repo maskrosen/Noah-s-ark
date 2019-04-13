@@ -77,14 +77,14 @@ public sealed class Bootstrap
         {            
             Entity particle = entityManager.CreateEntity(WaterParticleArchetype);
             entityManager.AddSharedComponentData(particle, WaterParticleLook);
-            var position = random.NextFloat3() * 200 - 100;
+            var position = random.NextFloat3() * 100 - Constants.HIGH_WORLD_EDGE;
             position.y = 0;
             var velocity = random.NextFloat3() * 4f - 2;
             velocity.y = 0;
             entityManager.SetComponentData(particle, new Scale { Value = new float3(0.2f)});
             entityManager.SetComponentData(particle, new Position { Value = position });
             entityManager.SetComponentData(particle, new Rotation { Value = quaternion.identity });
-            entityManager.SetComponentData(particle, new VelocityComponent { Velocity = new float3(1, 0, 0) });
+            entityManager.SetComponentData(particle, new VelocityComponent { Value = new float3(1, 0, 0) });
         }
     }
 
@@ -101,7 +101,7 @@ public sealed class Bootstrap
         entityManager.SetComponentData(boat, new Position { Value = new float3(0.0f, 0.0f, 0.0f) });
         entityManager.SetComponentData(boat, new Rotation { Value = /*quaternion.Euler(-90f, 0, 0)*/ quaternion.identity });
         entityManager.SetComponentData(boat, new TurnRateComponent { TurnRate = 90 });
-        entityManager.SetComponentData(boat, new VelocityComponent { Velocity = new float3(0, 0, 8)});
+        entityManager.SetComponentData(boat, new VelocityComponent { Value = new float3(0, 0, 8)});
 
         SpawnParticles();
     

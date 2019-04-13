@@ -38,13 +38,13 @@ public class BoatControlSystem : ComponentSystem
 
             //
 
-            var velocityVector = new Vector3(velocity.Velocity.x, velocity.Velocity.y, velocity.Velocity.z);
+            var velocityVector = new Vector3(velocity.Value.x, velocity.Value.y, velocity.Value.z);
 
             velocityDirection *= velocityVector.magnitude;
 
             var newVelocity = new float3(velocityDirection.x, velocityDirection.y, velocityDirection.z);
 
-            boatData.Velocity[i] = new VelocityComponent { Velocity = newVelocity };
+            boatData.Velocity[i] = new VelocityComponent { Value = newVelocity };
         }
     }
 }

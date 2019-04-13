@@ -12,6 +12,7 @@ public class WaterParticleSystem : ComponentSystem
         public readonly int Length;
         public ComponentDataArray<Position> Position;
         public ComponentDataArray<ParticleComponent> Particle;
+        public ComponentDataArray<VelocityComponent> Velocity;
     }
 
     [Inject] private ParticleData particleData;
@@ -25,12 +26,27 @@ public class WaterParticleSystem : ComponentSystem
         for (int i = 0; i < particleData.Length; i++)
         {
             var position = particleData.Position[i];
-            if(position.Value.x > 100)
+            var velocity = particleData.Velocity[i];
+            if(position.Value.x > Constants.HIGH_WORLD_EDGE)
             {
-                position.Value.x = -100;
+                position.Value.x = Constants.LOW_WORLD_EDGE;
             }
 
             particleData.Position[i] = position;
+
+            int x = (int)position.Value.x + Constants.WORLD_VECTORFIELD_OFFSET;
+            int y = (int)position.Value.z + Constants.WORLD_VECTORFIELD_OFFSET;
+            
+            int vectorFieldIndex = x * Constants.VECTORFIELD_SIZE + y;
+
+            var vector = VectorField.Get().field[vectorFieldIndex];
+
+            var velocityDirection = new float3(vector.x, 0, vector.y);
+
+            velocity.Value = velocityDirection * Utils.Float3Magnitude(velocity.Value);
+
+            particleData.Velocity[i] = velocity;
+
 
         }
     }
