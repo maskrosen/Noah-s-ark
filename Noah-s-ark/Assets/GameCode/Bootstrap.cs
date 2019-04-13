@@ -8,11 +8,6 @@ using Unity.Mathematics;
 
 public sealed class Bootstrap
 {
-    public static EntityArchetype PlayerArchetype;
-    public static EntityArchetype BotArchetype;
-    public static EntityArchetype GameStateArchetype;
-    public static EntityArchetype BulletArchetype;
-    public static EntityArchetype GameOverArchetype;
     public static EntityArchetype BoatArchetype;
     public static EntityArchetype WaterParticleArchetype;
     public static EntityArchetype GoalArchetype;
@@ -32,18 +27,6 @@ public sealed class Bootstrap
         VectorField.Initialize();
 
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
-
-        PlayerArchetype = entityManager.CreateArchetype(
-            typeof(Position), typeof(Rotation), typeof(PlayerPosition), typeof(PlayerInput), typeof(PlayerTurnState), typeof(PlayerFaction), typeof(PlayerComponent));
-
-        BotArchetype = entityManager.CreateArchetype(
-            typeof(Position), typeof(Rotation), typeof(PlayerPosition), typeof(PlayerInput), typeof(PlayerTurnState), typeof(PlayerFaction), typeof(BotState), typeof(PlayerComponent));
-
-        GameStateArchetype = entityManager.CreateArchetype(typeof(GameState));
-
-        BulletArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(VelocityComponent), typeof(PlayerPosition), typeof(PlayerFaction), typeof(TimerComponent), typeof(BulletComponent));
-
-        GameOverArchetype = entityManager.CreateArchetype(typeof(GameOverComponent));
         
         BoatArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(VelocityComponent), typeof(TurnRateComponent), typeof(Scale), typeof(BoatComponent));
 
@@ -92,9 +75,6 @@ public sealed class Bootstrap
     {
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
 
-        Entity gameState = entityManager.CreateEntity(GameStateArchetype);
-
-
         Entity boat = entityManager.CreateEntity(BoatArchetype);
         entityManager.AddSharedComponentData(boat, BoatLook);
         entityManager.SetComponentData(boat, new Scale { Value = new float3(100.0f, 100.0f, 100.0f) });
@@ -107,10 +87,10 @@ public sealed class Bootstrap
     
 
         /*
-          //When we have multiple levels, the bunny can be used as well. scale with 100
+          // When we have multiple levels, the bunny can be used as well. scale with 100
           entityManager.AddSharedComponentData(goal, BunnyLook);
           entityManager.SetComponentData(goal, new Scale { Value = new float3(100.0f, 100.0f, 100.0f) });
-         */
+        */
         var goalPosition = new float3(5, 0, 15);
         Entity goal = entityManager.CreateEntity(GoalArchetype);
         entityManager.AddSharedComponentData(goal, FoxLook);
@@ -118,36 +98,6 @@ public sealed class Bootstrap
         entityManager.SetComponentData(goal, new Position { Value = goalPosition });
         entityManager.SetComponentData(goal, new Rotation { Value = /*quaternion.Euler(-90f, 0, 0)*/ quaternion.identity });
         entityManager.SetComponentData(goal, new CircleComponent { Position = goalPosition, Radius = 5 });
-
-        /*
-        var turnState = new GameState { CurrentTurnFaction = UnityEngine.Random.Range(0, 2), CurrentState = GameStates.Playing};
-
-        entityManager.SetComponentData(gameState, turnState);
-
-        Entity player = entityManager.CreateEntity(PlayerArchetype);
-
-        entityManager.SetComponentData(player, new Position { Value = new float3(0.0f, 0.0f, 0.0f) });
-        var rotation = new Rotation { Value = /*quaternion.Euler(-1.5f,0,0)  quaternion.identity };
-        rotation.Value = math.mul(math.normalize(rotation.Value), quaternion.AxisAngle(new float3(1,0,0), -(float)(math.PI/2)));
-        entityManager.SetComponentData(player, rotation);
-        var faction = new PlayerFaction { Faction = Factions.Player};
-        entityManager.SetComponentData(player, faction);
-        entityManager.SetComponentData(player, new PlayerPosition { Position = UnityEngine.Random.Range(0, Settings.playerStandingSpots) });
-
-        entityManager.AddSharedComponentData(player, PlayerLook);
-
-        // Add enemy player
-        Entity enemy = entityManager.CreateEntity(BotArchetype);
-
-        entityManager.SetComponentData(enemy, new Position { Value = new float3(0.0f, 0.0f, Settings.distanceBetweenPlayers) });
-        entityManager.SetComponentData(enemy, rotation);
-        var factionEnemy = new PlayerFaction { Faction = Factions.Enemy };
-        entityManager.SetComponentData(enemy, factionEnemy);
-        entityManager.SetComponentData(enemy, new PlayerPosition { Position = UnityEngine.Random.Range(0, Settings.playerStandingSpots) });
-        var botState = new BotState { TurnCooldown = Settings.botTurnCooldown };
-
-        entityManager.AddSharedComponentData(enemy, PlayerLook);
-        */
     }
 
     private static RenderMesh GetLookFromPrototype(string protoName)
