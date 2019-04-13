@@ -67,6 +67,12 @@ public struct GoalComponent : IComponentData
 
 }
 
+public struct IslandComponent : IComponentData
+{
+
+}
+
+
 public struct PlayerComponent : IComponentData
 {
 
