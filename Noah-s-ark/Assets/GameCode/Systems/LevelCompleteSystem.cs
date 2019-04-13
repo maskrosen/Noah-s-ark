@@ -40,10 +40,8 @@ public class LevelCompleteSystem : ComponentSystem
             {
                 var boatPos = boatData.Position[j].Value;
                 var goalCircle = goalData.Circle[i];
-                var diffX = boatPos.x - goalCircle.Position.x;
-                var diffY = boatPos.y - goalCircle.Position.y;
-                var diffZ = boatPos.z - goalCircle.Position.z;
-                var distanceSq = (diffX*diffX + diffY*diffY + diffZ*diffZ);
+                var diffVector = boatPos - goalCircle.Position;
+                var distanceSq = Utils.Float3MagnitudeSq(diffVector);
                 if (distanceSq < goalCircle.Radius*goalCircle.Radius)
                 {
                     Debug.Log("Goal reached!!!");

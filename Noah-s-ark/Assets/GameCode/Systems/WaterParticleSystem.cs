@@ -64,8 +64,6 @@ public class WaterParticleSystem : ComponentSystem
             var vector = VectorField.Get().field[vectorFieldIndex];
             
             var velocityDirection = new float3(vector.x, 0, vector.y);
-
-            velocity.Value = velocityDirection * Utils.Float3Magnitude(velocity.Value);
             
             particleData.Velocity[i] = velocity;
             */
