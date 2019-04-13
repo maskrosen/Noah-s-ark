@@ -52,9 +52,6 @@ public sealed class Bootstrap
         if (!Settings)
             return;
 
-        Camera.main.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-        Camera.main.transform.position = new Vector3(0f, 0f, 0f);
-
         PlayerLook = GetLookFromPrototype("PlayerRenderPrototype");
         BoatLook = GetLookFromPrototype("BoatRenderPrototype");
 
