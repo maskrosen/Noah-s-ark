@@ -45,7 +45,7 @@ public class LevelCompleteSystem : ComponentSystem
                 if (distanceSq < goalCircle.Radius*goalCircle.Radius)
                 {
                     Debug.Log("Goal reached!!!");
-                    StatusText.text = "You got pwnd in the butt";
+                    StatusText.text = "You got pwnd in the butthole";
                 }
             }
         }

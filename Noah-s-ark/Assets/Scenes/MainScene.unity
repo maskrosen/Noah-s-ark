@@ -1143,6 +1143,9 @@ MonoBehaviour:
   botTurnCooldown: 1
   bulletSpeed: 50
   bulletLifeDuration: 1
+  cameraSpeed: 3
+  cameraDistance: 10
+  cameraHeight: 20
 --- !u!4 &1098306336
 Transform:
   m_ObjectHideFlags: 0

@@ -19,6 +19,10 @@ public class Settings : MonoBehaviour
 
     public float bulletSpeed = 10f;
     public float bulletLifeDuration = 3f;
-    
+
+    public float cameraSpeed = 1f;
+    public float cameraDistance = 25f;
+    public float cameraHeight = 15f;
+
 
 }
