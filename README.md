@@ -1,7 +1,7 @@
 # Noah-s-ark
 God chose Noah to be a new start for the corrupted human race for Noah is a rightful man. There is only one tiny problem, Noah is stupid as fuck. 
 
-Alternative descriptions:
+Alternative descriptions:  
 Retarded motherfucker  
 Completely lacking intelligence  
 Dull-witted dweeb  
