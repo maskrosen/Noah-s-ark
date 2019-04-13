@@ -57,7 +57,7 @@ public sealed class Bootstrap
         PlayerLook = GetLookFromPrototype("PlayerRenderPrototype");
         BoatLook = GetLookFromPrototype("BoatRenderPrototype");
 
-        World.Active.GetOrCreateManager<GameOverSystem>().SetupGameObjects();
+        World.Active.GetOrCreateManager<LevelCompleteSystem>().SetupGameObjects();
         NewGame();
     }
 
