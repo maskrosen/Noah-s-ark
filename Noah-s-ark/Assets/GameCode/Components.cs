@@ -3,6 +3,7 @@ using Unity.Entities;
 using System;
 using Unity.Mathematics;
 
+
 public struct PlayerPosition : IComponentData
 {
     public int Position;
@@ -55,7 +56,10 @@ public struct TimerComponent : IComponentData
 
 public struct ParticleComponent : IComponentData
 {
+}
     
+public struct BoatComponent : IComponentData
+{
 }
 
 public struct PlayerComponent : IComponentData
@@ -66,6 +70,12 @@ public struct PlayerComponent : IComponentData
 public struct BulletComponent : IComponentData
 {
 
+}
+
+public struct CircleComponent : IComponentData
+{
+    public float3 Position;
+    public float Radius;
 }
 
 public struct GameOverComponent : IComponentData
