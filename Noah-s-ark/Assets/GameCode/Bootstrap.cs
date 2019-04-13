@@ -16,9 +16,11 @@ public sealed class Bootstrap
     public static EntityArchetype BulletArchetype;
     public static EntityArchetype GameOverArchetype;
     public static EntityArchetype BoatArchetype;
+    public static EntityArchetype WaterParticleArchetype;
 
     public static RenderMesh PlayerLook;
     public static RenderMesh BoatLook;
+    public static RenderMesh WaterParticleLook;
 
     public static Settings Settings;
 
@@ -42,7 +44,7 @@ public sealed class Bootstrap
 
         BoatArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(VelocityComponent), typeof(TurnRateComponent), typeof(Scale));
 
-
+        WaterParticleArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(Scale), typeof(VelocityComponent), typeof(ParticleComponent));
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -55,12 +57,31 @@ public sealed class Bootstrap
 
         PlayerLook = GetLookFromPrototype("PlayerRenderPrototype");
         BoatLook = GetLookFromPrototype("BoatRenderPrototype");
+        WaterParticleLook = GetLookFromPrototype("WaterParticleRenderPrototype");
 
         World.Active.GetOrCreateManager<GameOverSystem>().SetupGameObjects();
 
         NewGame();
     }
 
+    public static void SpawnParticles()
+    {
+        var entityManager = World.Active.GetOrCreateManager<EntityManager>();
+        var random = new Unity.Mathematics.Random(835483957);
+        for (int i = 0; i < 5000; i++)
+        {            
+            Entity particle = entityManager.CreateEntity(WaterParticleArchetype);
+            entityManager.AddSharedComponentData(particle, WaterParticleLook);
+            var position = random.NextFloat3() * 200 - 100;
+            position.y = 0;
+            var velocity = random.NextFloat3() * 4f - 2;
+            velocity.y = 0;
+            entityManager.SetComponentData(particle, new Scale { Value = new float3(0.2f)});
+            entityManager.SetComponentData(particle, new Position { Value = position });
+            entityManager.SetComponentData(particle, new Rotation { Value = quaternion.identity });
+            entityManager.SetComponentData(particle, new VelocityComponent { Velocity = new float3(1, 0, 0) });
+        }
+    }
 
     public static void NewGame()
     {
@@ -76,6 +97,7 @@ public sealed class Bootstrap
         entityManager.SetComponentData(boat, new TurnRateComponent { TurnRate = 30 });
         entityManager.SetComponentData(boat, new VelocityComponent { Velocity =  new float3(0, 0, 5)});
 
+        SpawnParticles();
     
         /*
 
