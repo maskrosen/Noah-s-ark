@@ -18,7 +18,7 @@ public sealed class Bootstrap
     public static EntityArchetype VectorFieldArchetype;
 
     public static RenderMesh PlayerLook;
-    public static RenderMesh BulletLook;
+    public static RenderMesh BoatLook;
 
     public static Settings Settings;
 
@@ -40,10 +40,11 @@ public sealed class Bootstrap
 
         GameOverArchetype = entityManager.CreateArchetype(typeof(GameOverComponent));
 
-        BoatArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(VelocityComponent), typeof(TurnRateComponent));
-
         VectorFieldArchetype = entityManager.CreateArchetype(typeof(VectorField));
-}
+        
+        BoatArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(VelocityComponent), typeof(TurnRateComponent), typeof(Scale), typeof(BoatComponent));
+
+    }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     public static void InitializeWithScene()
@@ -53,8 +54,11 @@ public sealed class Bootstrap
         if (!Settings)
             return;
 
+        Camera.main.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+        Camera.main.transform.position = new Vector3(0f, 0f, 0f);
+
         PlayerLook = GetLookFromPrototype("PlayerRenderPrototype");
-        BulletLook = GetLookFromPrototype("BulletRenderPrototype");
+        BoatLook = GetLookFromPrototype("BoatRenderPrototype");
 
         World.Active.GetOrCreateManager<GameOverSystem>().SetupGameObjects();
         NewGame();
@@ -71,11 +75,13 @@ public sealed class Bootstrap
         entityManager.SetComponentData(VectorField, new VectorField {Value = new Vector2[Constants.VECTORFIELD_SIZE* Constants.VECTORFIELD_SIZE] });
 
         Entity boat = entityManager.CreateEntity(BoatArchetype);
-        entityManager.AddSharedComponentData(boat, BulletLook);
+        entityManager.AddSharedComponentData(boat, BoatLook);
+        entityManager.SetComponentData(boat, new Scale { Value = new float3(100.0f, 100.0f, 100.0f) });
         entityManager.SetComponentData(boat, new Position { Value = new float3(0.0f, 0.0f, 0.0f) });
         entityManager.SetComponentData(boat, new Rotation { Value = /*quaternion.Euler(-90f, 0, 0)*/   quaternion.identity });
-        entityManager.SetComponentData(boat, new TurnRateComponent { TurnRate = 30 });
-        entityManager.SetComponentData(boat, new VelocityComponent { Velocity =  new float3(0, 0, 10)});
+
+        entityManager.SetComponentData(boat, new TurnRateComponent { TurnRate = 90 });
+        entityManager.SetComponentData(boat, new VelocityComponent { Velocity =  new float3(0, 0, 8)});
     
         /*
 

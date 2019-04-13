@@ -70,7 +70,7 @@ public class PlayerControlSystem : ComponentSystem
                 PostUpdateCommands.SetComponent(entity, playerPositon);
                 PostUpdateCommands.SetComponent(entity, playerFaction);
                 PostUpdateCommands.SetComponent(entity, new TimerComponent { Duration = settings.bulletLifeDuration, CurrentTime = settings.bulletLifeDuration, DeleteOnEnd = true });
-                PostUpdateCommands.AddSharedComponent(entity, Bootstrap.BulletLook);
+                PostUpdateCommands.AddSharedComponent(entity, Bootstrap.BoatLook);
 
                 playerTurnState.TurnDone = true;
 
