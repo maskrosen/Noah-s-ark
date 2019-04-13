@@ -8,7 +8,6 @@ using Unity.Mathematics;
 
 public sealed class Bootstrap
 {
-    
     public static EntityArchetype PlayerArchetype;
     public static EntityArchetype BotArchetype;
     public static EntityArchetype GameStateArchetype;
@@ -16,6 +15,7 @@ public sealed class Bootstrap
     public static EntityArchetype GameOverArchetype;
     public static EntityArchetype BoatArchetype;
     public static EntityArchetype VectorFieldArchetype;
+    public static EntityArchetype GoalArchetype;
 
     public static RenderMesh PlayerLook;
     public static RenderMesh BoatLook;
@@ -25,7 +25,6 @@ public sealed class Bootstrap
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     public static void Initialize()
     {
-
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
 
         PlayerArchetype = entityManager.CreateArchetype(
@@ -44,6 +43,7 @@ public sealed class Bootstrap
         
         BoatArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(VelocityComponent), typeof(TurnRateComponent), typeof(Scale), typeof(BoatComponent));
 
+        GoalArchetype = entityManager.CreateArchetype(typeof(CircleComponent));
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -61,7 +61,6 @@ public sealed class Bootstrap
         NewGame();
     }
 
-
     public static void NewGame()
     {
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
@@ -75,14 +74,15 @@ public sealed class Bootstrap
         entityManager.AddSharedComponentData(boat, BoatLook);
         entityManager.SetComponentData(boat, new Scale { Value = new float3(100.0f, 100.0f, 100.0f) });
         entityManager.SetComponentData(boat, new Position { Value = new float3(0.0f, 0.0f, 0.0f) });
-        entityManager.SetComponentData(boat, new Rotation { Value = /*quaternion.Euler(-90f, 0, 0)*/   quaternion.identity });
-
+        entityManager.SetComponentData(boat, new Rotation { Value = /*quaternion.Euler(-90f, 0, 0)*/ quaternion.identity });
         entityManager.SetComponentData(boat, new TurnRateComponent { TurnRate = 90 });
-        entityManager.SetComponentData(boat, new VelocityComponent { Velocity =  new float3(0, 0, 8)});
+        entityManager.SetComponentData(boat, new VelocityComponent { Velocity = new float3(0, 0, 8)});
+
+
+        Entity goal = entityManager.CreateEntity(GoalArchetype);
+        entityManager.SetComponentData(goal, new CircleComponent { Position = new float3(0, 0, 10), Radius = 3 });
     
         /*
-
-
         var turnState = new GameState { CurrentTurnFaction = UnityEngine.Random.Range(0, 2), CurrentState = GameStates.Playing};
 
         entityManager.SetComponentData(gameState, turnState);
@@ -109,11 +109,9 @@ public sealed class Bootstrap
         entityManager.SetComponentData(enemy, new PlayerPosition { Position = UnityEngine.Random.Range(0, Settings.playerStandingSpots) });
         var botState = new BotState { TurnCooldown = Settings.botTurnCooldown };
 
-        entityManager.AddSharedComponentData(enemy, PlayerLook); */
-
-
+        entityManager.AddSharedComponentData(enemy, PlayerLook);
+        */
     }
-
 
     private static RenderMesh GetLookFromPrototype(string protoName)
     {
@@ -122,5 +120,4 @@ public sealed class Bootstrap
         Object.Destroy(proto);
         return result;
     }
-
 }
