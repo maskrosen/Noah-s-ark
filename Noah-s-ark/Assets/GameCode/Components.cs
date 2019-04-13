@@ -63,6 +63,11 @@ public struct BulletComponent : IComponentData
 
 }
 
+public struct LevelCompleteComponent : IComponentData
+{
+
+}
+
 public struct GameOverComponent : IComponentData
 {
     public int WinningFaction;
