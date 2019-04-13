@@ -28,7 +28,7 @@ public class VectorField
     private static Vector2 defaultVectorField(float i, float j)
     {
         //return new Vector2(i * i / 3 - j, i * i / 3 - j) / Constants.VECTORFIELD_SIZE;
-        return new Vector2(-i + 2.5f * j+1, 2.5f * i - 1.27f * j+1)/3;
+        return new Vector2(-i + 2.5f * j+1, 2.5f * i - 1.27f * j+1)/30;
     }
 
 

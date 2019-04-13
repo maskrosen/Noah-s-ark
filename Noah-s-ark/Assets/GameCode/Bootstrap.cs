@@ -64,6 +64,7 @@ public sealed class Bootstrap
             position.y = 0;
             var velocity = random.NextFloat3() * 4f - 2;
             velocity.y = 0;
+
             entityManager.SetComponentData(particle, new Scale { Value = new float3(0.2f)});
             entityManager.SetComponentData(particle, new Position { Value = position });
             entityManager.SetComponentData(particle, new Rotation { Value = quaternion.identity });
