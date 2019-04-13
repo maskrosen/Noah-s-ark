@@ -10,5 +10,5 @@ public class Constants
     public const float HIGH_WORLD_EDGE = 50;
     public const int WORLD_VECTORFIELD_OFFSET = 50;
 
-    public const float PARTICLE_LIFETIME = 20;
+    public const float PARTICLE_LIFETIME = 60;
 }

@@ -13,6 +13,7 @@ public class WaterParticleSystem : ComponentSystem
         public ComponentDataArray<Position> Position;
         public ComponentDataArray<ParticleComponent> Particle;
         public ComponentDataArray<VelocityComponent> Velocity;
+        public ComponentDataArray<Rotation> Rotation;
     }
 
     [Inject] private ParticleData particleData;
@@ -30,6 +31,7 @@ public class WaterParticleSystem : ComponentSystem
             var position = particleData.Position[i];
             var velocity = particleData.Velocity[i];
             var particleComponent = particleData.Particle[i];
+            var rotation = particleData.Rotation[i];
 
             bool randomizePosition = false;
             if(position.Value.x > Constants.HIGH_WORLD_EDGE)
@@ -84,10 +86,15 @@ public class WaterParticleSystem : ComponentSystem
             
             */
             Vector2 vel = VectorField.Get().VectorAtPos(position.Value);
+            var normalizedRotaion = vel.normalized;
             var newVelocity = new float3(vel.x, 0, vel.y);
+
+            rotation.Value = Quaternion.LookRotation(newVelocity, Vector3.up);
+
             particleData.Velocity[i] = new VelocityComponent { Value = newVelocity };
             particleData.Particle[i] = particleComponent;
             particleData.Position[i] = position;
+            particleData.Rotation[i] = rotation;
         }
     }
 }
