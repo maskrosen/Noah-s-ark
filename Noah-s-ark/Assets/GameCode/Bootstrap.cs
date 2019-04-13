@@ -69,7 +69,7 @@ public sealed class Bootstrap
         Entity gameState = entityManager.CreateEntity(GameStateArchetype);
 
         Entity VectorField = entityManager.CreateEntity(VectorFieldArchetype);
-        entityManager.SetComponentData(VectorField, new VectorField {Value = new Vector2[Constants.VECTORFIELD_SIZE* Constants.VECTORFIELD_SIZE] });
+        //entityManager.SetComponentData(VectorField, new VectorField {Value = new Vector2[Constants.VECTORFIELD_SIZE* Constants.VECTORFIELD_SIZE] });
 
         Entity boat = entityManager.CreateEntity(BoatArchetype);
         entityManager.AddSharedComponentData(boat, BoatLook);

@@ -5,7 +5,7 @@ using Unity.Mathematics;
 
 public struct VectorField : IComponentData
 {
-    public Vector2[] Value;
+    //public Vector2[] Value;
 }
 
 public struct PlayerPosition : IComponentData
