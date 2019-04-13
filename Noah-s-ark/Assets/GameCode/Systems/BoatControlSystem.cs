@@ -52,7 +52,6 @@ public class BoatControlSystem : ComponentSystem
             boatData.Velocity[i] = new VelocityComponent { Value = newVelocity };
 
             boatData.Rotation[i] = new Rotation { Value = Quaternion.LookRotation(newVelocity, Vector3.up) };
-            
         }
     }
 }
