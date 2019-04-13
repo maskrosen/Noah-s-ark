@@ -32,6 +32,21 @@ public class WaterParticleSystem : ComponentSystem
                 position.Value.x = Constants.LOW_WORLD_EDGE;
             }
 
+            if (position.Value.x < Constants.LOW_WORLD_EDGE)
+            {
+                position.Value.x = Constants.HIGH_WORLD_EDGE;
+            }
+
+            if (position.Value.z > Constants.HIGH_WORLD_EDGE)
+            {
+                position.Value.z = Constants.LOW_WORLD_EDGE;
+            }
+
+            if (position.Value.z < Constants.LOW_WORLD_EDGE)
+            {
+                position.Value.z = Constants.HIGH_WORLD_EDGE;
+            }
+
             particleData.Position[i] = position;
 
             int x = (int)position.Value.x + Constants.WORLD_VECTORFIELD_OFFSET;
