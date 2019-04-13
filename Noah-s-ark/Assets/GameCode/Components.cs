@@ -59,6 +59,11 @@ public struct BoatComponent : IComponentData
 
 }
 
+public struct GoalComponent : IComponentData
+{
+
+}
+
 public struct PlayerComponent : IComponentData
 {
 

@@ -45,7 +45,7 @@ public sealed class Bootstrap
         
         BoatArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(VelocityComponent), typeof(TurnRateComponent), typeof(Scale), typeof(BoatComponent));
 
-        GoalArchetype = entityManager.CreateArchetype(typeof(CircleComponent), typeof(Position), typeof(Rotation), typeof(Scale));
+        GoalArchetype = entityManager.CreateArchetype(typeof(CircleComponent), typeof(Position), typeof(Rotation), typeof(Scale), typeof(GoalComponent));
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -76,22 +76,22 @@ public sealed class Bootstrap
         entityManager.SetComponentData(boat, new Scale { Value = new float3(100.0f, 100.0f, 100.0f) });
         entityManager.SetComponentData(boat, new Position { Value = new float3(0.0f, 0.0f, 0.0f) });
         entityManager.SetComponentData(boat, new Rotation { Value = /*quaternion.Euler(-90f, 0, 0)*/ quaternion.identity });
-        entityManager.SetComponentData(boat, new TurnRateComponent { TurnRate = 90 });
+        entityManager.SetComponentData(boat, new TurnRateComponent { TurnRate = 10 });
         entityManager.SetComponentData(boat, new VelocityComponent { Velocity = new float3(0, 0, 8)});
 
 
+        /*
+          //When we have multiple levels, the bunny can be used as well. scale with 100
+          entityManager.AddSharedComponentData(goal, BunnyLook);
+          entityManager.SetComponentData(goal, new Scale { Value = new float3(100.0f, 100.0f, 100.0f) });
+         */
+        var goalPosition = new float3(5, 0, 15);
         Entity goal = entityManager.CreateEntity(GoalArchetype);
         entityManager.AddSharedComponentData(goal, FoxLook);
         entityManager.SetComponentData(goal, new Scale { Value = new float3(2000.0f, 2000.0f, 2000.0f) });
-        /*
-         //When we have multiple levels, the bunny can be used as well. scale with 100
-         entityManager.AddSharedComponentData(goal, BunnyLook);
-         entityManager.SetComponentData(goal, new Scale { Value = new float3(100.0f, 100.0f, 100.0f) });
-        */
-        entityManager.SetComponentData(goal, new Position { Value = new float3(0.0f, 0.0f, 0.0f) });
-        entityManager.SetComponentData(goal, new Rotation { Value = /*quaternion.Euler(-90f, 0, 0)*/
-        quaternion.identity });
-        entityManager.SetComponentData(goal, new CircleComponent { Position = new float3(10, 0, 7), Radius = 5 });
+        entityManager.SetComponentData(goal, new Position { Value = goalPosition });
+        entityManager.SetComponentData(goal, new Rotation { Value = /*quaternion.Euler(-90f, 0, 0)*/ quaternion.identity });
+        entityManager.SetComponentData(goal, new CircleComponent { Position = goalPosition, Radius = 5 });
 
         /*
         var turnState = new GameState { CurrentTurnFaction = UnityEngine.Random.Range(0, 2), CurrentState = GameStates.Playing};
