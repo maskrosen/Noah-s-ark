@@ -62,15 +62,16 @@ public class VectorField
 
     public Vector2 VectorAtPos(float3 position)
     {
-        float fi = Mathf.Clamp(position.x + Constants.VECTORFIELD_SIZE / 2, 0, Constants.VECTORFIELD_SIZE-1);
-        float fj = Mathf.Clamp(position.z + Constants.VECTORFIELD_SIZE / 2, 0, Constants.VECTORFIELD_SIZE-1);
+        float fi = Mathf.Clamp(position.x + Constants.WORLD_VECTORFIELD_OFFSET, 0, Constants.VECTORFIELD_SIZE-1);
+        float fj = Mathf.Clamp(position.z + Constants.WORLD_VECTORFIELD_OFFSET, 0, Constants.VECTORFIELD_SIZE-1);
 
         int i = (int)fi;
         int j = (int)fj;
 
-        float ifrac = fi % i;
-        float jfrac = fj % j;
+        float ifrac = fi - i;
+        float jfrac = fj - j;
 
+        //return field[i*Constants.VECTORFIELD_SIZE + j];
         
         Vector2 pos01;
         
@@ -91,7 +92,7 @@ public class VectorField
             d = Mathf.Clamp(j, 0, Constants.VECTORFIELD_SIZE - 1);
 
         }
-        else if(ifrac < 0.5f && jfrac > 0.5f)
+        else if(ifrac <= 0.5f && jfrac > 0.5f)
         {
             pos01 = new Vector2(ifrac + 0.5f, jfrac - 0.5f);
 
@@ -100,18 +101,17 @@ public class VectorField
             
             u = Mathf.Clamp(j + 1, 0, Constants.VECTORFIELD_SIZE - 1);
             d = Mathf.Clamp(j, 0, Constants.VECTORFIELD_SIZE - 1);
-
-
+            
         }
-        else if(ifrac > 0.5f && jfrac < 0.5f)
+        else if(ifrac > 0.5f && jfrac <= 0.5f)
         {
             pos01 = new Vector2(ifrac - 0.5f, jfrac + 0.5f);
 
-            r = Mathf.Clamp(i, 0, Constants.VECTORFIELD_SIZE - 1);
-            l = Mathf.Clamp(i - 1, 0, Constants.VECTORFIELD_SIZE - 1);
+            r = Mathf.Clamp(i + 1, 0, Constants.VECTORFIELD_SIZE - 1);
+            l = Mathf.Clamp(i, 0, Constants.VECTORFIELD_SIZE - 1);
 
-            u = Mathf.Clamp(j + 1, 0, Constants.VECTORFIELD_SIZE - 1);
-            d = Mathf.Clamp(j, 0, Constants.VECTORFIELD_SIZE - 1);
+            u = Mathf.Clamp(j, 0, Constants.VECTORFIELD_SIZE - 1);
+            d = Mathf.Clamp(j - 1, 0, Constants.VECTORFIELD_SIZE - 1);
 
         }
         else //if (ifrac < 0.5f && jfrac < 0.5f)
@@ -134,5 +134,6 @@ public class VectorField
         Vector2 sample = lerpSample(urV, ulV, drV, dlV, pos01);
 
         return sample;
+        
     }
 }
