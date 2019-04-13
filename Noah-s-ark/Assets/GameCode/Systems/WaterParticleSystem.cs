@@ -36,7 +36,13 @@ public class WaterParticleSystem : ComponentSystem
 
             int x = (int)position.Value.x + Constants.WORLD_VECTORFIELD_OFFSET;
             int y = (int)position.Value.z + Constants.WORLD_VECTORFIELD_OFFSET;
-            
+
+            x = math.min(x, Constants.VECTORFIELD_SIZE - 1);
+            x = math.max(x, 0);
+
+            y = math.min(x, Constants.VECTORFIELD_SIZE - 1);
+            y = math.max(x, 0);
+
             int vectorFieldIndex = x * Constants.VECTORFIELD_SIZE + y;
 
             var vector = VectorField.Get().field[vectorFieldIndex];

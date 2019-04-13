@@ -9,12 +9,14 @@ public class LevelCompleteSystem : ComponentSystem
     {
         public readonly int Length;
         public ComponentDataArray<CircleComponent> Circle;
+        public ComponentDataArray<GoalComponent> GoalComponent;
     }
 
     public struct BoatData
     {
         public readonly int Length;
         public ComponentDataArray<Position> Position;
+        public ComponentDataArray<BoatComponent> BoatComponent;
     }
 
     public Text StatusText;
