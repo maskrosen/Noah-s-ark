@@ -14,7 +14,6 @@ public sealed class Bootstrap
     public static EntityArchetype BulletArchetype;
     public static EntityArchetype GameOverArchetype;
     public static EntityArchetype BoatArchetype;
-    public static EntityArchetype VectorFieldArchetype;
     public static EntityArchetype GoalArchetype;
 
     public static RenderMesh FoxLook;
@@ -23,9 +22,13 @@ public sealed class Bootstrap
 
     public static Settings Settings;
 
+    private VectorField vectorField;
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     public static void Initialize()
     {
+        VectorField.Initialize();
+
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
 
         PlayerArchetype = entityManager.CreateArchetype(
@@ -39,8 +42,6 @@ public sealed class Bootstrap
         BulletArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(VelocityComponent), typeof(PlayerPosition), typeof(PlayerFaction), typeof(TimerComponent), typeof(BulletComponent));
 
         GameOverArchetype = entityManager.CreateArchetype(typeof(GameOverComponent));
-
-        VectorFieldArchetype = entityManager.CreateArchetype(typeof(VectorField));
         
         BoatArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(VelocityComponent), typeof(TurnRateComponent), typeof(Scale), typeof(BoatComponent));
 
@@ -59,7 +60,7 @@ public sealed class Bootstrap
         BunnyLook = GetLookFromPrototype("BunnyRenderPrototype");
         BoatLook = GetLookFromPrototype("BoatRenderPrototype");
 
-        World.Active.GetOrCreateManager<GameOverSystem>().SetupGameObjects();
+        World.Active.GetOrCreateManager<LevelCompleteSystem>().SetupGameObjects();
         NewGame();
     }
 
@@ -69,8 +70,6 @@ public sealed class Bootstrap
 
         Entity gameState = entityManager.CreateEntity(GameStateArchetype);
 
-        Entity VectorField = entityManager.CreateEntity(VectorFieldArchetype);
-        //entityManager.SetComponentData(VectorField, new VectorField {Value = new Vector2[Constants.VECTORFIELD_SIZE* Constants.VECTORFIELD_SIZE] });
 
         Entity boat = entityManager.CreateEntity(BoatArchetype);
         entityManager.AddSharedComponentData(boat, BoatLook);
