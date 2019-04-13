@@ -41,6 +41,11 @@ public struct VelocityComponent : IComponentData
     public float3 Velocity; 
 }
 
+public struct TurnRateComponent : IComponentData
+{
+    public float TurnRate;
+}
+
 public struct TimerComponent : IComponentData
 {
     public float CurrentTime;

@@ -15,6 +15,7 @@ public sealed class Bootstrap
     public static EntityArchetype GameStateArchetype;
     public static EntityArchetype BulletArchetype;
     public static EntityArchetype GameOverArchetype;
+    public static EntityArchetype BoatArchetype;
 
     public static RenderMesh PlayerLook;
     public static RenderMesh BulletLook;
@@ -38,6 +39,9 @@ public sealed class Bootstrap
         BulletArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(VelocityComponent), typeof(PlayerPosition), typeof(PlayerFaction), typeof(TimerComponent), typeof(BulletComponent));
 
         GameOverArchetype = entityManager.CreateArchetype(typeof(GameOverComponent));
+
+        BoatArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(VelocityComponent), typeof(TurnRateComponent));
+
 
     }
 
@@ -64,6 +68,17 @@ public sealed class Bootstrap
 
         Entity gameState = entityManager.CreateEntity(GameStateArchetype);
 
+        Entity boat = entityManager.CreateEntity(BoatArchetype);
+        entityManager.AddSharedComponentData(boat, BulletLook);
+        entityManager.SetComponentData(boat, new Position { Value = new float3(0.0f, 0.0f, 0.0f) });
+        entityManager.SetComponentData(boat, new Rotation { Value = /*quaternion.Euler(-90f, 0, 0)*/   quaternion.identity });
+        entityManager.SetComponentData(boat, new TurnRateComponent { TurnRate = 30 });
+        entityManager.SetComponentData(boat, new VelocityComponent { Velocity =  new float3(0, 0, 10)});
+
+    
+        /*
+
+
         var turnState = new GameState { CurrentTurnFaction = UnityEngine.Random.Range(0, 2), CurrentState = GameStates.Playing};
 
         entityManager.SetComponentData(gameState, turnState);
@@ -71,7 +86,7 @@ public sealed class Bootstrap
         Entity player = entityManager.CreateEntity(PlayerArchetype);
 
         entityManager.SetComponentData(player, new Position { Value = new float3(0.0f, 0.0f, 0.0f) });
-        var rotation = new Rotation { Value = /*quaternion.Euler(-1.5f,0,0) */ quaternion.identity };
+        var rotation = new Rotation { Value = /*quaternion.Euler(-1.5f,0,0)  quaternion.identity };
         rotation.Value = math.mul(math.normalize(rotation.Value), quaternion.AxisAngle(new float3(1,0,0), -(float)(math.PI/2)));
         entityManager.SetComponentData(player, rotation);
         var faction = new PlayerFaction { Faction = Factions.Player};
@@ -90,7 +105,7 @@ public sealed class Bootstrap
         entityManager.SetComponentData(enemy, new PlayerPosition { Position = UnityEngine.Random.Range(0, Settings.playerStandingSpots) });
         var botState = new BotState { TurnCooldown = Settings.botTurnCooldown };
 
-        entityManager.AddSharedComponentData(enemy, PlayerLook);
+        entityManager.AddSharedComponentData(enemy, PlayerLook); */
 
 
     }
