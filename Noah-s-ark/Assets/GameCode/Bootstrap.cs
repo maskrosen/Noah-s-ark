@@ -79,8 +79,8 @@ public sealed class Bootstrap
 
 
         Entity goal = entityManager.CreateEntity(GoalArchetype);
-        entityManager.SetComponentData(goal, new CircleComponent { Position = new float3(0, 0, 10), Radius = 3 });
-    
+        entityManager.SetComponentData(goal, new CircleComponent { Position = new float3(10, 0, 7), Radius = 5 });
+
         /*
         var turnState = new GameState { CurrentTurnFaction = UnityEngine.Random.Range(0, 2), CurrentState = GameStates.Playing};
 

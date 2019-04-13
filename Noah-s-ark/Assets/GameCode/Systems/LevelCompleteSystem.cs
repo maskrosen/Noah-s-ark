@@ -37,8 +37,15 @@ public class LevelCompleteSystem : ComponentSystem
             for (int j = 0; j < boatData.Length; j++)
             {
                 var boatPos = boatData.Position[j].Value;
-                var goalCircle = goalData.Circle;
-                Debug.Log("LOL!");
+                var goalCircle = goalData.Circle[i];
+                var diffX = boatPos.x - goalCircle.Position.x;
+                var diffY = boatPos.y - goalCircle.Position.y;
+                var diffZ = boatPos.z - goalCircle.Position.z;
+                var distanceSq = (diffX*diffX + diffY*diffY + diffZ*diffZ);
+                if (distanceSq < goalCircle.Radius*goalCircle.Radius)
+                {
+                    Debug.Log("Goal reached!!!");
+                }
                 //if (boatData.Position[j])
                 //StatusText.text = "You got pwnd in the butt";
             }
