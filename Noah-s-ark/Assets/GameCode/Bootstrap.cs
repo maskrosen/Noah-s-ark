@@ -148,7 +148,7 @@ public sealed class Bootstrap
         Entity island = entityManager.CreateEntity(IslandArchetype);
         entityManager.AddSharedComponentData(island, IslandLook);
         entityManager.SetComponentData(island, new Scale { Value = new float3(10.0f, 5.0f, 10.0f) });
-        pos.y = Random.Range(-radius*0.75f,0f);
+        pos.y = Random.Range(-radius*0.3f,0f);
         entityManager.SetComponentData(island, new Position { Value = pos });
         entityManager.SetComponentData(island, new Rotation { Value = quaternion.identity });
         VectorField.Get().AddIsland(pos, radius, 3.5f);
@@ -225,11 +225,13 @@ public sealed class Bootstrap
         {
             entityManager.DestroyEntity(e);
         }
+        VectorField.Reset();
+
     }
 
     public static void NewGame()
     {
-        SpawnLevel(1);
+        SpawnLevel(2);
         SpawnMeteorite();
         SpawnParticles();
         Time.timeScale = 1;
