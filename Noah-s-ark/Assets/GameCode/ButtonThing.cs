@@ -42,6 +42,11 @@ public class ButtonThing : MonoBehaviour
                     bool clockwise = UnityEngine.Random.Range(0f, 1f) > 0.5;
                     VectorField.Get().AddWhirlpool(goalPosition, 10, clockwise, 20);
                 }
+                else if (currentPower == "meteorite")
+                {
+                    Debug.Log("Generating Meteorite");
+                    Bootstrap.SpawnMeteorite(goalPosition, 1);
+                }
             }
             waitingForClick = false;
             currentPower = null;

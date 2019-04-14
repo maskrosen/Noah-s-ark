@@ -32,8 +32,8 @@ public class MeteoriteSystem : ComponentSystem
         {
             if (meteoriteData.Position[i].Value.y < -20)
             {
-                meteoriteData.Position[i] = new Position { Value = random.NextFloat3() * 20 + new float3(-10f, 50f, -10f) };
-                meteoriteData.Velocity[i] = new VelocityComponent { Value = random.NextFloat3() * 6 + new float3(-3f, -10f, -3f) };
+                //meteoriteData.Position[i] = new Position { Value = random.NextFloat3() * 20 + new float3(-10f, 50f, -10f) };
+                meteoriteData.Velocity[i] = new VelocityComponent { Value = new float3(0f, 0f, 0f) };
                 
             }
 
