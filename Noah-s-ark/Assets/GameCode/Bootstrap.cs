@@ -41,6 +41,7 @@ public sealed class Bootstrap
         IslandArchetype = entityManager.CreateArchetype(typeof(RadiusComponent), typeof(Position), typeof(Rotation), typeof(Scale), typeof(IslandComponent));
         GameStateArchetype = entityManager.CreateArchetype(typeof(GameStateComponent));
 
+
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -62,10 +63,12 @@ public sealed class Bootstrap
         MeteoriteLook = GetLookFromPrototype("MeteoriteRenderPrototype");
 
         World.Active.GetOrCreateManager<CollisionSystem>().SetupGameObjects();
+        World.Active.GetOrCreateManager<InputSystem>().Init();
+        World.Active.GetOrCreateManager<WindSystem>().Init();
+
         NewGame();
     }
-
-
+    
     public static void SpawnBoat(float3 pos)
     {
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
@@ -85,18 +88,18 @@ public sealed class Bootstrap
 
         var debugMesh = CreateCircleMesh(radius, 100, 0.25f);
         var debugMaterial = new Material(Shader.Find("Unlit/DebugShader"));
-        var debugRender = new DebugRenderComponent { mesh = debugMesh, material = debugMaterial };
+        var debugRender = new DebugRenderComponent { Mesh = debugMesh, Material = debugMaterial };
         entityManager.AddSharedComponentData(boat, debugRender);
     }
 
 
-    public static void SpawnMeteorite()
+    public static void SpawnRandomMeteorites(int amount)
     {
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
         var random = new Unity.Mathematics.Random(835483957);
 
         /* Spawn a lot of meteorites */
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < amount; i++)
         {
             Entity meteorite = entityManager.CreateEntity(MeteoriteArchetype);
             entityManager.AddSharedComponentData(meteorite, MeteoriteLook);
@@ -109,27 +112,35 @@ public sealed class Bootstrap
 
             var debugMesh = CreateCircleMesh(radius, 100, 0.25f);
             var debugMaterial = new Material(Shader.Find("Unlit/DebugShader"));
-            var debugRender = new DebugRenderComponent { mesh = debugMesh, material = debugMaterial };
+            var debugRender = new DebugRenderComponent { Mesh = debugMesh, Material = debugMaterial };
             entityManager.AddSharedComponentData(meteorite, debugRender);
             entityManager.SetComponentData(meteorite, new RadiusComponent { Value = radius });
         }
+    }
 
-        /*
-        meteorite = entityManager.CreateEntity(MeteoriteArchetype);
-        entityManager.AddSharedComponentData(meteorite, MeteoriteLook);
-        entityManager.SetComponentData(meteorite, new Scale { Value = new float3(0.05f, 0.05f, 0.05f) });
-        entityManager.SetComponentData(meteorite, new Position { Value = new float3(0.0f, -30f, 0.0f) });
-        entityManager.SetComponentData(meteorite, new VelocityComponent { Value = new float3(1f, -10f, 1f) });
-        entityManager.SetComponentData(meteorite, new Rotation { Value = Quaternion.identity });
-        entityManager.SetComponentData(meteorite, new RotationVelocity { Value = random.NextFloat3() * 300 * new float3(0f, 1f, 0f) - new float3(0f, 150f, 0f)});
-        radius = 5;
+    public static void SpawnMeteorite(float3 pos, int amount = 1)
+    {
+        var entityManager = World.Active.GetOrCreateManager<EntityManager>();
+        var random = new Unity.Mathematics.Random(835483957);
 
-        debugMesh = CreateCircleMesh(radius, 100, 0.25f);
-        debugMaterial = new Material(Shader.Find("Unlit/DebugShader"));
-        debugRender = new DebugRenderComponent { mesh = debugMesh, material = debugMaterial };
-        entityManager.AddSharedComponentData(meteorite, debugRender);
-        entityManager.SetComponentData(meteorite, new RadiusComponent { Value = radius });
-        */
+        /* Spawn a lot of meteorites */
+        for (int i = 0; i < amount; i++)
+        {
+            Entity meteorite = entityManager.CreateEntity(MeteoriteArchetype);
+            entityManager.AddSharedComponentData(meteorite, MeteoriteLook);
+            entityManager.SetComponentData(meteorite, new Scale { Value = new float3(0.02f, 0.02f, 0.02f) });
+            entityManager.SetComponentData(meteorite, new Position { Value = pos + new float3(0f, 40f, 0f) });
+            entityManager.SetComponentData(meteorite, new VelocityComponent { Value = new float3(0f, -10f, 0f) });
+            entityManager.SetComponentData(meteorite, new Rotation { Value = Quaternion.identity });
+            entityManager.SetComponentData(meteorite, new RotationVelocity { Value = random.NextFloat3() * 300 * new float3(0f, 1f, 0f) - new float3(0f, 150f, 0f) });
+            float radius = 2;
+
+            var debugMesh = CreateCircleMesh(radius, 100, 0.25f);
+            var debugMaterial = new Material(Shader.Find("Unlit/DebugShader"));
+            var debugRender = new DebugRenderComponent { Mesh = debugMesh, Material = debugMaterial };
+            entityManager.AddSharedComponentData(meteorite, debugRender);
+            entityManager.SetComponentData(meteorite, new RadiusComponent { Value = radius });
+        }
     }
 
     public static void SpawnIsland(float3 pos)
@@ -148,7 +159,7 @@ public sealed class Bootstrap
 
         var debugMesh = CreateCircleMesh(radius, 100, 0.25f);
         var debugMaterial = new Material(Shader.Find("Unlit/DebugShader"));
-        var debugRender = new DebugRenderComponent { mesh = debugMesh, material = debugMaterial };
+        var debugRender = new DebugRenderComponent { Mesh = debugMesh, Material = debugMaterial };
         entityManager.AddSharedComponentData(island, debugRender);
         entityManager.SetComponentData(island, new RadiusComponent { Value = radius });
     }
@@ -205,7 +216,7 @@ public sealed class Bootstrap
 
         var debugMesh = CreateCircleMesh(radius, 100, 0.25f);
         var debugMaterial = new Material(Shader.Find("Unlit/DebugShader"));
-        var debugRender = new DebugRenderComponent { mesh = debugMesh, material = debugMaterial };
+        var debugRender = new DebugRenderComponent { Mesh = debugMesh, Material = debugMaterial };
         entityManager.AddSharedComponentData(goal, debugRender);
 
     }
@@ -227,7 +238,6 @@ public sealed class Bootstrap
     {
         Debug.Log("Level: " + level);
         SpawnLevel(level);
-        SpawnMeteorite();
         SpawnParticles();
         Time.timeScale = 1;
         GameObject.Find("GameStatusText").GetComponent<Text>().text = "";

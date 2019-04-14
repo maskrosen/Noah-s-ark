@@ -11,4 +11,6 @@ public class Constants
     public const int WORLD_VECTORFIELD_OFFSET = VECTORFIELD_SIZE/2;
 
     public const float PARTICLE_LIFETIME = 60;
+    public const float WIND_POWERUP_TIME = 10;
+    public const float WIND_POWERUP_SPEED = 15;
 }

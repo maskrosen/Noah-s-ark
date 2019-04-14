@@ -34,7 +34,7 @@ public class DebugRenderSystem : ComponentSystem
             var debugRender = debugData.DebugRender[i];
             
             Graphics.DrawMesh(
-                debugRender.mesh, position.Value, rotation.Value, debugRender.material, 0
+                debugRender.Mesh, position.Value, rotation.Value, debugRender.Material, 0
             );
 
         }

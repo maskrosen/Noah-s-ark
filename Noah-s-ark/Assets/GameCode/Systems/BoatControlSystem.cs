@@ -17,7 +17,14 @@ public class BoatControlSystem : ComponentSystem
         public ComponentDataArray<BoatComponent> BoatComponent;
     }
 
+    public struct WindData
+    {
+        public ComponentDataArray<WindComponent> WindComponent;
+        public ComponentDataArray<TimerComponent> TimerComponent;
+    }
+
     [Inject] private BoatData boatData;
+    [Inject] private WindData windData;
 
     protected override void OnUpdate()
     {
@@ -30,26 +37,31 @@ public class BoatControlSystem : ComponentSystem
             var turnRate = boatData.TurnRate[i];
             var rotation = boatData.Rotation[i];
             var position = boatData.Position[i];
-
-            /*
-            var newRot = Quaternion.Euler(0, turnRate.TurnRate*dt, 0) * rotation.Value;
-            newRot.Normalize();
-            boatData.Rotation[i] = new Rotation { Value = newRot };
-            
-            var velocityDirection = newRot * Vector3.forward;
-
-            //
-
-            var velocityVector = new Vector3(velocity.Value.x, velocity.Value.y, velocity.Value.z);
-            
-            velocityDirection *= velocityVector.magnitude;
-
-            var newVelocity = new float3(velocityDirection.x, velocityDirection.y, velocityDirection.z);
-            boatData.Velocity[i] = new VelocityComponent { Velocity = newVelocity };
-            */
-            
+           
             Vector2 vel = VectorField.Get().VectorAtPos(position.Value);
             var newVelocity = new float3(vel.x, 0, vel.y);
+
+            if(windData.WindComponent.Length > 0)
+            {
+                var wind = windData.WindComponent[0]; //Only one wind active at the same time
+                var timer = windData.TimerComponent[0];
+                Vector2 lerpedVector;
+                var vector = wind.Velocity.normalized * Constants.WIND_POWERUP_SPEED;
+                if (timer.CurrentTime / timer.Duration < 0.5)
+                {
+                    lerpedVector = Vector2.Lerp(new Vector2(0, 0), vector, timer.CurrentTime / timer.Duration);
+
+                }
+                else
+                {
+                    lerpedVector = Vector2.Lerp(vector, new Vector2(0, 0), timer.CurrentTime / timer.Duration);
+                }
+                var windVelocity = new float3(lerpedVector.x, 0, lerpedVector.y);
+
+
+                newVelocity += windVelocity;
+            }
+
             boatData.Velocity[i] = new VelocityComponent { Value = newVelocity };
 
             if (Utils.Float3Magnitude(newVelocity) < 0.001f)
