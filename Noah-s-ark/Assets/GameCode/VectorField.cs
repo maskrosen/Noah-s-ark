@@ -25,10 +25,8 @@ public class VectorField
                 instance.field[i * Constants.VECTORFIELD_SIZE + j] = defaultVectorField(i - Constants.VECTORFIELD_SIZE/2, j - Constants.VECTORFIELD_SIZE / 2);
             }
         }
-
-        AddWhirlpool(new float3(30,0,30), 15, true, 30);
-        AddWhirlpool(new float3(-30, 0, -30), 15, false, 30);
-
+        instance.AddWhirlpool(new float3(30,0,30), 15, true, 30);
+        instance.AddWhirlpool(new float3(-30, 0, -30), 15, false, 30);
     }
 
     private static Vector2 defaultVectorField(float i, float j)
@@ -38,7 +36,7 @@ public class VectorField
         return v;
     }
 
-    public static void AddWhirlpool(float3 pos, float str, bool clockwise, float eventHorizonRadius)
+    public void AddWhirlpool(float3 pos, float str, bool clockwise, float eventHorizonRadius)
     {
         float x = Mathf.Clamp(pos.x + Constants.WORLD_VECTORFIELD_OFFSET, 0, Constants.VECTORFIELD_SIZE - 1);
         float y = Mathf.Clamp(pos.z + Constants.WORLD_VECTORFIELD_OFFSET, 0, Constants.VECTORFIELD_SIZE - 1);
@@ -57,14 +55,29 @@ public class VectorField
                 Vector2 toCenter = new Vector2(x, y) - new Vector2(i, j);
 
                 float distToCenter = toCenter.magnitude / eventHorizonRadius;
-                instance.field[i * Constants.VECTORFIELD_SIZE + j] = Vector2.Lerp(-v, instance.field[i * Constants.VECTORFIELD_SIZE + j], Mathf.Sqrt(Mathf.Clamp01(distToCenter)));
-                
+                field[i * Constants.VECTORFIELD_SIZE + j] = Vector2.Lerp(-v, field[i * Constants.VECTORFIELD_SIZE + j], Mathf.Sqrt(Mathf.Clamp01(distToCenter)));
             }
         }
     }
 
-    public static void AddIsland(float3 pos)
+    public void AddIsland(float3 pos, float radius, float ExtraAffectRadius)
     {
+        float x = Mathf.Clamp(pos.x + Constants.WORLD_VECTORFIELD_OFFSET, 0, Constants.VECTORFIELD_SIZE - 1);
+        float y = Mathf.Clamp(pos.z + Constants.WORLD_VECTORFIELD_OFFSET, 0, Constants.VECTORFIELD_SIZE - 1);
+
+        for (int i = 0; i < Constants.VECTORFIELD_SIZE; i++)
+        {
+            for (int j = 0; j < Constants.VECTORFIELD_SIZE; j++)
+            {
+                Vector2 toCenter = new Vector2(x, y) - new Vector2(i, j);
+                float distToCenter = Mathf.Clamp01(toCenter.magnitude / (radius + ExtraAffectRadius));
+
+                if (toCenter.magnitude < radius)
+                    field[i * Constants.VECTORFIELD_SIZE + j] = Vector2.zero;
+                else
+                    field[i * Constants.VECTORFIELD_SIZE + j] = Vector2.Lerp(-toCenter, field[i * Constants.VECTORFIELD_SIZE + j], Mathf.Sqrt(distToCenter));
+            }
+        }
 
     }
     

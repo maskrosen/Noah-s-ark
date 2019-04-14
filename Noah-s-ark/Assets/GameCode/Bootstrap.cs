@@ -125,6 +125,8 @@ public sealed class Bootstrap
         entityManager.SetComponentData(island, new Rotation { Value = quaternion.identity });
         float radius = 5;
 
+        VectorField.Get().AddIsland(pos, radius, 3.5f);
+
         var debugMesh = CreateCircleMesh(radius, 100, 0.25f);
         var debugMaterial = new Material(Shader.Find("Unlit/DebugShader"));
         var debugRender = new DebugRenderComponent { mesh = debugMesh, material = debugMaterial };
