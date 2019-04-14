@@ -38,7 +38,7 @@ public class ButtonThing : MonoBehaviour
                 entityManager.SetComponentData(goal, new Scale { Value = new float3(50.0f, 50.0f, 50.0f) });
                 entityManager.SetComponentData(goal, new Position { Value = goalPosition });
                 entityManager.SetComponentData(goal, new Rotation { Value = quaternion.identity });
-                entityManager.SetComponentData(goal, new CircleComponent { Position = goalPosition, Radius = 5 });
+                entityManager.SetComponentData(goal, new RadiusComponent { Value = 5 });
             }
             waitingForClick = false;
         }
