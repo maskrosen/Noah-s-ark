@@ -2,6 +2,7 @@
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ButtonThing : MonoBehaviour
 {
@@ -75,6 +76,14 @@ public class ButtonThing : MonoBehaviour
         {
             Time.timeScale = 4;
         }
+    }
+
+    public void OnClickNextLevel()
+    {
+        GameObject.Find("btnNextLevel").GetComponent<Button>().interactable = false;
+        var level = 2; //TODO: find gamestate!
+        Bootstrap.ClearGame();
+        Bootstrap.NewGame(level);
     }
 
     public void OnWindClicked()

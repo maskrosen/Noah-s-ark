@@ -36,7 +36,7 @@ public class Utils
         return (distanceSq < (radius1 + radius2) * (radius1 + radius2)) && Math.Abs(pos2.y) < radius2;
     }
 
-    public static Vector3 getCenterOfVectorArea(int i, int j)
+    public static Vector3 getCenterOfVectorFieldArea(int i, int j)
     {
         return new Vector3(i - (Constants.VECTORFIELD_SIZE / 2) + 0.5f, 0,j - (Constants.VECTORFIELD_SIZE / 2) + 0.5f);
     }

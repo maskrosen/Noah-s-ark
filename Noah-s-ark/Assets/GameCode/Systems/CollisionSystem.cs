@@ -69,14 +69,11 @@ public class CollisionSystem : ComponentSystem
             {
                 if (Utils.IsCollidingCircleCircle(boatData.Position[i].Value, boatData.Radius[i].Value, goalData.Position[j].Value, goalData.Radius[j].Value))
                 {
-                    /*
+                    
                     Time.timeScale = 0;
                     StatusText.text = "You got pwnd in the butthole";
-                    */
-                    for (int k = 0; k < gameStateData.Length; k++) {
-                        Bootstrap.ClearGame();
-                        Bootstrap.NewGame(gameStateData.gamestate[k].currentLevel + 1);
-                    }
+                    
+                    GameObject.Find("btnNextLevel").GetComponent<Button>().interactable = true;
                 }
             }
 

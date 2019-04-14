@@ -244,7 +244,7 @@ public sealed class Bootstrap
 
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
         Entity gameState = entityManager.CreateEntity(GameStateArchetype);
-        entityManager.AddComponentData(gameState, new GameStateComponent { currentLevel = 1 });
+        entityManager.AddComponentData(gameState, new GameStateComponent { currentLevel = level });
     }
 
     private static Mesh CreateCircleMesh(float radius, int numberOfSides, float thickness)
@@ -380,6 +380,8 @@ public sealed class Bootstrap
     private static void SpawnLevel(int level)
     {
         Texture2D image = Resources.Load<Texture2D>("level" + level);
+        var widthFactor = Constants.MAX_WORLD_SIZE / image.width;
+        var heightFactor = Constants.MAX_WORLD_SIZE / image.height;
         for (int i = 0; i < image.width; i++)
         {
             for (int j = 0; j < image.height; j++)
@@ -387,13 +389,13 @@ public sealed class Bootstrap
                 Color pixel = image.GetPixel(i, j);
                 if (pixel == Color.black) //Islands
                 {
-                    SpawnIsland(Utils.getCenterOfVectorArea(i,j));
+                    SpawnIsland(Utils.getCenterOfVectorFieldArea(i*widthFactor,j*heightFactor));
                 } else if (pixel == Color.green) //Boat
                 {
-                    SpawnBoat(Utils.getCenterOfVectorArea(i, j));
+                    SpawnBoat(Utils.getCenterOfVectorFieldArea(i * widthFactor, j * heightFactor));
                 } else if (pixel == Color.red) //Goal
                 {
-                    SpawnGoal(Utils.getCenterOfVectorArea(i, j));
+                    SpawnGoal(Utils.getCenterOfVectorFieldArea(i * widthFactor, j * heightFactor));
                 }
             }
         }
