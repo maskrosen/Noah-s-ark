@@ -36,7 +36,7 @@ public sealed class Bootstrap
         BoatArchetype = entityManager.CreateArchetype(typeof(RadiusComponent), typeof(Position), typeof(Rotation), typeof(VelocityComponent), typeof(TurnRateComponent), typeof(Scale), typeof(BoatComponent));
         WaterParticleArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(Scale), typeof(VelocityComponent), typeof(ParticleComponent));
 
-        MeteoriteArchetype = entityManager.CreateArchetype(typeof(Position), typeof(VelocityComponent), typeof(Scale), typeof(MeteoriteComponent), typeof(Rotation), typeof(RotationVelocity));
+        MeteoriteArchetype = entityManager.CreateArchetype(typeof(RadiusComponent), typeof(Position), typeof(VelocityComponent), typeof(Scale), typeof(MeteoriteComponent), typeof(Rotation), typeof(RotationVelocity));
         GoalArchetype = entityManager.CreateArchetype(typeof(RadiusComponent), typeof(Position), typeof(Rotation), typeof(Scale), typeof(GoalComponent));
         IslandArchetype = entityManager.CreateArchetype(typeof(RadiusComponent), typeof(Position), typeof(Rotation), typeof(Scale), typeof(IslandComponent));
 
@@ -94,25 +94,41 @@ public sealed class Bootstrap
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
         var random = new Unity.Mathematics.Random(835483957);
 
-        Entity meteorite = entityManager.CreateEntity(MeteoriteArchetype);
-        entityManager.AddSharedComponentData(meteorite, MeteoriteLook);
-        entityManager.SetComponentData(meteorite, new Scale { Value = new float3(0.05f, 0.05f, 0.05f) });
-        entityManager.SetComponentData(meteorite, new Position { Value = new float3(0.0f, -30f, 0.0f) });
-        entityManager.SetComponentData(meteorite, new VelocityComponent { Value = new float3(1f, -10f, 1f) });
-        entityManager.SetComponentData(meteorite, new Rotation { Value = Quaternion.identity });
-        entityManager.SetComponentData(meteorite, new RotationVelocity { Value = random.NextFloat3() * 300 * new float3(0f, 1f, 0f) - new float3(0f, 150f, 0f)});
-
         /* Spawn a lot of meteorites */
-        for (int i = 0; i < 20; i++)
+        for (int i = 0; i < 1; i++)
         {
-            meteorite = entityManager.CreateEntity(MeteoriteArchetype);
+            Entity meteorite = entityManager.CreateEntity(MeteoriteArchetype);
             entityManager.AddSharedComponentData(meteorite, MeteoriteLook);
             entityManager.SetComponentData(meteorite, new Scale { Value = new float3(0.02f, 0.02f, 0.02f) });
             entityManager.SetComponentData(meteorite, new Position { Value = new float3(0f, -30f, 0f) });
             entityManager.SetComponentData(meteorite, new VelocityComponent { Value = new float3(0f, 0f, 0f) });
             entityManager.SetComponentData(meteorite, new Rotation { Value = Quaternion.identity });
             entityManager.SetComponentData(meteorite, new RotationVelocity { Value = random.NextFloat3() * 300 * new float3(0f, 1f, 0f) - new float3(0f, 150f, 0f) });
+            float radius = 2;
+
+            var debugMesh = CreateCircleMesh(radius, 100, 0.25f);
+            var debugMaterial = new Material(Shader.Find("Unlit/DebugShader"));
+            var debugRender = new DebugRenderComponent { mesh = debugMesh, material = debugMaterial };
+            entityManager.AddSharedComponentData(meteorite, debugRender);
+            entityManager.SetComponentData(meteorite, new RadiusComponent { Value = radius });
         }
+
+        /*
+        meteorite = entityManager.CreateEntity(MeteoriteArchetype);
+        entityManager.AddSharedComponentData(meteorite, MeteoriteLook);
+        entityManager.SetComponentData(meteorite, new Scale { Value = new float3(0.05f, 0.05f, 0.05f) });
+        entityManager.SetComponentData(meteorite, new Position { Value = new float3(0.0f, -30f, 0.0f) });
+        entityManager.SetComponentData(meteorite, new VelocityComponent { Value = new float3(1f, -10f, 1f) });
+        entityManager.SetComponentData(meteorite, new Rotation { Value = Quaternion.identity });
+        entityManager.SetComponentData(meteorite, new RotationVelocity { Value = random.NextFloat3() * 300 * new float3(0f, 1f, 0f) - new float3(0f, 150f, 0f)});
+        radius = 5;
+
+        debugMesh = CreateCircleMesh(radius, 100, 0.25f);
+        debugMaterial = new Material(Shader.Find("Unlit/DebugShader"));
+        debugRender = new DebugRenderComponent { mesh = debugMesh, material = debugMaterial };
+        entityManager.AddSharedComponentData(meteorite, debugRender);
+        entityManager.SetComponentData(meteorite, new RadiusComponent { Value = radius });
+        */
     }
 
     public static void SpawnIsland(float3 pos)
@@ -271,6 +287,94 @@ public sealed class Bootstrap
         mesh.vertices = verticies;
         mesh.triangles = triangles;
         mesh.normals = normals;
+
+        return mesh;
+    }
+
+    private static Mesh CreateSphereMesh(float radius, int numberOfSides, float thickness)
+    {
+        //verticies
+        var verticies = new Vector3[numberOfSides * 2];
+        float x;
+        float y;
+        for (int i = 0; i < numberOfSides; i++)
+        {
+            x = radius * Mathf.Sin((2 * Mathf.PI * i) / numberOfSides);
+            y = radius * Mathf.Cos((2 * Mathf.PI * i) / numberOfSides);
+            verticies[i] = new Vector3(x, 0, y);
+        }
+        for (int i = 0; i < numberOfSides; i++)
+        {
+            x = (radius - thickness) * Mathf.Sin((2 * Mathf.PI * i) / numberOfSides);
+            y = (radius - thickness) * Mathf.Cos((2 * Mathf.PI * i) / numberOfSides);
+            verticies[numberOfSides + i] = new Vector3(x, 0, y);
+        }
+
+
+        //triangles
+        var triangles = new int[numberOfSides * 6 + 6];
+        int triangleIndex = 0;
+        for (int i = 0; i < (numberOfSides - 1); i++)
+        {
+            triangles[triangleIndex] = i;
+            triangles[triangleIndex + 1] = i + 1;
+            triangles[triangleIndex + 2] = numberOfSides + i;
+
+            triangles[triangleIndex + 3] = numberOfSides + i;
+            triangles[triangleIndex + 4] = i + 1;
+            triangles[triangleIndex + 5] = numberOfSides + i + 1;
+
+            triangleIndex += 6;
+        }
+
+        //Add the bit triangles to connect the edges
+        triangles[triangleIndex] = numberOfSides - 1;
+        triangles[triangleIndex + 1] = 0;
+        triangles[triangleIndex + 2] = numberOfSides * 2 - 1;
+
+        triangles[triangleIndex + 3] = numberOfSides * 2 - 1;
+        triangles[triangleIndex + 4] = 0;
+        triangles[triangleIndex + 5] = numberOfSides;
+
+        //normals
+        var normals = new Vector3[numberOfSides * 2];
+        for (int i = 0; i < verticies.Length; i++)
+        {
+            normals[i] = -Vector3.forward;
+        }
+
+        var mesh = new Mesh();
+        //initialise
+        mesh.vertices = verticies;
+        mesh.triangles = triangles;
+        mesh.normals = normals;
+
+        return mesh;
+    }
+
+    private static Mesh CreateCoolSphereMesh(int _detailLevel)
+    {
+        var vectors = new List<Vector3>();
+        var indices = new List<int>();
+
+        GeometryProvider.Icosahedron(vectors, indices);
+
+        for (var i = 0; i < _detailLevel; i++)
+        {
+            GeometryProvider.Subdivide(vectors, indices, true);
+        }
+
+
+        /// normalize vectors to "inflate" the icosahedron into a sphere.
+        for (var i = 0; i < vectors.Count; i++)
+        { 
+            vectors[i] = Vector3.Normalize(vectors[i]);
+        }
+
+        var mesh = new Mesh();
+        mesh.vertices = vectors.ToArray();
+        mesh.triangles = indices.ToArray();
+        mesh.normals = vectors.ToArray();
 
         return mesh;
     }
