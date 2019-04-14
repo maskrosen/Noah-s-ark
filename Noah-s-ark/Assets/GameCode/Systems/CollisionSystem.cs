@@ -3,7 +3,7 @@ using Unity.Transforms;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LevelCompleteSystem : ComponentSystem
+public class CollisionSystem : ComponentSystem
 {
     public struct GoalData
     {
@@ -19,10 +19,18 @@ public class LevelCompleteSystem : ComponentSystem
         public ComponentDataArray<BoatComponent> BoatComponent;
     }
 
+    public struct IslandData
+    {
+        public readonly int Length;
+        public ComponentDataArray<Position> Position;
+        public ComponentDataArray<BoatComponent> IslandComponent;
+    }
+
     public Text StatusText;
 
     [Inject] private GoalData goalData;
     [Inject] private BoatData boatData;
+    [Inject] private BoatData islandData;
 
     public void SetupGameObjects()
     {
@@ -34,12 +42,15 @@ public class LevelCompleteSystem : ComponentSystem
         float dt = Time.deltaTime;
         var settings = Bootstrap.Settings;
 
-        for (int i = 0; i < goalData.Length; i++)
+        //For every boat
+        for (int i = 0; i < boatData.Length; i++)
         {
-            for (int j = 0; j < boatData.Length; j++)
+            //For every goal
+            for (int j = 0; j < goalData.Length; j++)
             {
-                var boatPos = boatData.Position[j].Value;
-                var goalCircle = goalData.Circle[i];
+                
+                var boatPos = boatData.Position[i].Value;
+                var goalCircle = goalData.Circle[j];
                 var diffVector = boatPos - goalCircle.Position;
                 var distanceSq = Utils.Float3MagnitudeSq(diffVector);
                 if (distanceSq < goalCircle.Radius*goalCircle.Radius)
@@ -47,6 +58,12 @@ public class LevelCompleteSystem : ComponentSystem
                     Debug.Log("Goal reached!!!");
                     StatusText.text = "You got pwnd in the butt";
                 }
+            }
+
+            //For every island
+            for (int j = 0; j < islandData.Length; j++)
+            {
+                //TODO: Do stuff
             }
         }
     }

@@ -14,6 +14,7 @@ public class BoatControlSystem : ComponentSystem
         public ComponentDataArray<Rotation> Rotation;
         public ComponentDataArray<VelocityComponent> Velocity;
         public ComponentDataArray<TurnRateComponent> TurnRate;
+        public ComponentDataArray<BoatComponent> BoatComponent;
     }
 
     [Inject] private BoatData boatData;

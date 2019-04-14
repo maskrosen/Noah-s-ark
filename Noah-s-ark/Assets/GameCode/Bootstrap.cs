@@ -33,7 +33,7 @@ public sealed class Bootstrap
         BoatArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(VelocityComponent), typeof(TurnRateComponent), typeof(Scale), typeof(BoatComponent));
         WaterParticleArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(Scale), typeof(VelocityComponent), typeof(ParticleComponent));
         GoalArchetype = entityManager.CreateArchetype(typeof(CircleComponent), typeof(Position), typeof(Rotation), typeof(Scale), typeof(GoalComponent));
-        GoalArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(Scale), typeof(IslandComponent));
+        IslandArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(Scale), typeof(IslandComponent));
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -50,7 +50,7 @@ public sealed class Bootstrap
         WaterParticleLook = GetLookFromPrototype("WaterParticleRenderPrototype");
         IslandLook = GetLookFromPrototype("IslandRenderPrototype");
 
-        World.Active.GetOrCreateManager<LevelCompleteSystem>().SetupGameObjects();
+        World.Active.GetOrCreateManager<CollisionSystem>().SetupGameObjects();
         NewGame();
     }
 
@@ -72,10 +72,13 @@ public sealed class Bootstrap
     {
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
 
+        var size = new float3(20.0f, 10.0f, 15.0f);
+        var position = new float3(10.0f, 0.0f, 20.0f);
+
         Entity island = entityManager.CreateEntity(IslandArchetype);
         entityManager.AddSharedComponentData(island, IslandLook);
-        entityManager.SetComponentData(island, new Scale { Value = new float3(100.0f, 100.0f, 100.0f) });
-        entityManager.SetComponentData(island, new Position { Value = new float3(0.0f, 0.0f, 0.0f) });
+        entityManager.SetComponentData(island, new Scale { Value = size });
+        entityManager.SetComponentData(island, new Position { Value = position });
         entityManager.SetComponentData(island, new Rotation { Value = quaternion.identity });
     }
 
@@ -108,7 +111,7 @@ public sealed class Bootstrap
           entityManager.AddSharedComponentData(goal, BunnyLook);
           entityManager.SetComponentData(goal, new Scale { Value = new float3(100.0f, 100.0f, 100.0f) });
         */
-        var goalPosition = new float3(5, 0, 15);
+        var goalPosition = new float3(5, 0, 5);
         Entity goal = entityManager.CreateEntity(GoalArchetype);
         entityManager.AddSharedComponentData(goal, FoxLook);
         entityManager.SetComponentData(goal, new Scale { Value = new float3(2000.0f, 2000.0f, 2000.0f) });
