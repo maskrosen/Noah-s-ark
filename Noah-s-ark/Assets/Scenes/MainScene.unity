@@ -1573,22 +1573,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 436711192b6a29b4c9a5cde81248ca57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerRotationSpeed: 10
-  playerRotation:
-    x: 0
-    y: 0
-    z: 0
-  playerSpaceDistance: 15
-  playerOffset: 15
-  distanceBetweenPlayers: 30
-  playerStandingSpots: 3
-  botTurnCooldown: 1
-  bulletSpeed: 50
-  bulletLifeDuration: 1
-  cameraSpeed: 3
-  cameraDistance: 10
+  camPositionSpeed: 3
+  camRotationSpeed: 3
+  cameraDistance: 25
   cameraHeight: 20
-  debugMode: 1
+  debugMode: 0
 --- !u!4 &1098306336
 Transform:
   m_ObjectHideFlags: 0
