@@ -129,9 +129,18 @@ public sealed class Bootstrap
         entityManager.SetComponentData(goal, new RadiusComponent { Value = 5.0f });
     }
 
+    public static void ClearGame()
+    {
+        var entityManager = World.Active.GetOrCreateManager<EntityManager>();
+        var entities = entityManager.GetAllEntities();
+        foreach (Entity e in entities)
+        {
+            entityManager.DestroyEntity(e);
+        }
+    }
+
     public static void NewGame()
     {
-
         SpawnBoat();
         SpawnIslands();
         SpawnParticles();

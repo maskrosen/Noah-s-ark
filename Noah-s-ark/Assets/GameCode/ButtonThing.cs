@@ -49,4 +49,12 @@ public class ButtonThing : MonoBehaviour
         waitingForClick = true;
         Debug.Log("Waiting for click");
     }
+    
+    public void OnClickRestart()
+    {
+        Bootstrap.ClearGame();
+        Bootstrap.NewGame();
+        
+        Debug.Log("Restarting game");
+    }
 }
