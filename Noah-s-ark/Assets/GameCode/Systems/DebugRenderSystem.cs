@@ -22,6 +22,8 @@ public class DebugRenderSystem : ComponentSystem
 
         float dt = Time.deltaTime;
         var settings = Bootstrap.Settings;
+        if (!settings.debugMode)
+            return;
 
         for (int i = 0; i < debugData.Length; i++)
         {
