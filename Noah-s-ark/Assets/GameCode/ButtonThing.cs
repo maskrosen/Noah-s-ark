@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using Unity.Entities;
 using Unity.Mathematics;
-using Unity.Transforms;
 using UnityEngine;
 
 public class ButtonThing : MonoBehaviour
@@ -51,7 +49,7 @@ public class ButtonThing : MonoBehaviour
                 var hitPoint = ray.GetPoint(distance);
                 // use the hitPoint to aim your cannon
                 //Debug.Log("hitPoint: " + hitPoint);
-
+                
                 float currentTime = Time.realtimeSinceStartup;
                 bool powerOnCooldown = currentTime - lastPowerUse[currentPower] < powerCooldown[currentPower];
 
@@ -69,7 +67,7 @@ public class ButtonThing : MonoBehaviour
                     if (currentPower == Constants.BUNNY_BTN)
                     {
                         Debug.Log("Generating bunny");
-                        Bootstrap.SpawnGoal(goalPosition, 1);
+                        EntitySpawner.SpawnGoal(goalPosition, 1);
                     }
                     else if (currentPower == Constants.WHIRLPOOL_BTN)
                     {
@@ -80,13 +78,11 @@ public class ButtonThing : MonoBehaviour
                     else if (currentPower == Constants.METEORITE_BTN)
                     {
                         Debug.Log("Generating Meteorite");
-                        Bootstrap.SpawnMeteorite(goalPosition, 1);
+                        EntitySpawner.SpawnMeteorite(goalPosition, 1);
                     }
 
                     lastPowerUse[currentPower] = Time.realtimeSinceStartup;
                 }
-
-                
             }
             waitingForClick = false;
             currentPower = null;
