@@ -11,9 +11,12 @@ public class VectorField
     */
     public readonly Vector2[] field;
 
-    public static void Initialize()
+    private Settings settings;
+
+    public static void Initialize(Settings settings)
     {
         instance = new VectorField(new Vector2[Constants.VECTORFIELD_SIZE * Constants.VECTORFIELD_SIZE]);
+        instance.settings = settings;
 
         for (int i = 0; i < Constants.VECTORFIELD_SIZE; i++)
         {
@@ -22,23 +25,67 @@ public class VectorField
                 instance.field[i * Constants.VECTORFIELD_SIZE + j] = defaultVectorField(i - Constants.VECTORFIELD_SIZE/2, j - Constants.VECTORFIELD_SIZE / 2);
             }
         }
+        instance.AddWhirlpool(new float3(30,0,30), 15, true, 30);
+        instance.AddWhirlpool(new float3(-30, 0, -30), 15, false, 30);
     }
 
     private static Vector2 defaultVectorField(float i, float j)
     {
-        Vector2 v = new Vector2(i + 5, j + 5) / Constants.VECTORFIELD_SIZE;
-        if (v.magnitude == 0)
-            return new Vector2(0,0);
-        v += new Vector2(-v.y, v.x) * 3/v.magnitude;
+        Vector2 v = new Vector2(0.1f, 2);
+        
         return v;
     }
 
+    public void AddWhirlpool(float3 pos, float str, bool clockwise, float eventHorizonRadius)
+    {
+        float x = Mathf.Clamp(pos.x + Constants.WORLD_VECTORFIELD_OFFSET, 0, Constants.VECTORFIELD_SIZE - 1);
+        float y = Mathf.Clamp(pos.z + Constants.WORLD_VECTORFIELD_OFFSET, 0, Constants.VECTORFIELD_SIZE - 1);
 
+        float dir = clockwise ? 1 : -1;
+
+        float maxMag = Mathf.Sqrt(Constants.VECTORFIELD_SIZE / 2 * Constants.VECTORFIELD_SIZE / 2 + Constants.VECTORFIELD_SIZE / 2 * Constants.VECTORFIELD_SIZE / 2);
+
+        for (int i = 0; i < Constants.VECTORFIELD_SIZE; i++)
+        {
+            for (int j = 0; j < Constants.VECTORFIELD_SIZE; j++)
+            {
+                Vector2 v = new Vector2(i - x, j - y) * str / Constants.VECTORFIELD_SIZE;
+                v += new Vector2(-v.y, v.x) * 3 * dir;
+                
+                Vector2 toCenter = new Vector2(x, y) - new Vector2(i, j);
+
+                float distToCenter = toCenter.magnitude / eventHorizonRadius;
+                field[i * Constants.VECTORFIELD_SIZE + j] = Vector2.Lerp(-v, field[i * Constants.VECTORFIELD_SIZE + j], Mathf.Sqrt(Mathf.Clamp01(distToCenter)));
+            }
+        }
+    }
+
+    public void AddIsland(float3 pos, float radius, float ExtraAffectRadius)
+    {
+        float x = Mathf.Clamp(pos.x + Constants.WORLD_VECTORFIELD_OFFSET, 0, Constants.VECTORFIELD_SIZE - 1);
+        float y = Mathf.Clamp(pos.z + Constants.WORLD_VECTORFIELD_OFFSET, 0, Constants.VECTORFIELD_SIZE - 1);
+
+        for (int i = 0; i < Constants.VECTORFIELD_SIZE; i++)
+        {
+            for (int j = 0; j < Constants.VECTORFIELD_SIZE; j++)
+            {
+                Vector2 toCenter = new Vector2(x, y) - new Vector2(i, j);
+                float distToCenter = Mathf.Clamp01(toCenter.magnitude / (radius + ExtraAffectRadius));
+
+                if (toCenter.magnitude < radius)
+                    field[i * Constants.VECTORFIELD_SIZE + j] = Vector2.zero;
+                else
+                    field[i * Constants.VECTORFIELD_SIZE + j] = Vector2.Lerp(-toCenter, field[i * Constants.VECTORFIELD_SIZE + j], Mathf.Sqrt(distToCenter));
+            }
+        }
+
+    }
+    
     public static VectorField Get()
     {
         if(instance == null)
         {
-            throw new System.Exception("Vector field not serialized");
+            throw new System.Exception("Vector field not initialized");
         }
         return instance;
     }
@@ -52,11 +99,8 @@ public class VectorField
     {
         Vector2 u = Vector2.Lerp(tl, tr, pos01.x);
         Vector2 d = Vector2.Lerp(bl, br, pos01.x);
-        //Vector2 l = Vector2.Lerp(bl, tl, pos01.y);
-        //Vector2 r = Vector2.Lerp(br, tr, pos01.y);
-
         Vector2 ud = Vector2.Lerp(d, u, pos01.y);
-        //Vector2 lr = Vector2.Lerp(l, r, pos01.x);
+
         return ud;
     }
 

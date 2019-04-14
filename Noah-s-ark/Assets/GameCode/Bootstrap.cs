@@ -6,6 +6,7 @@ using Unity.Transforms;
 using Unity.Rendering;
 using Unity.Mathematics;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public sealed class Bootstrap
 {
@@ -29,7 +30,6 @@ public sealed class Bootstrap
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     public static void Initialize()
     {
-        VectorField.Initialize();
 
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
         
@@ -50,6 +50,9 @@ public sealed class Bootstrap
         if (!Settings)
             return;
 
+        VectorField.Initialize(Settings);
+
+
         FoxLook = GetLookFromPrototype("FoxRenderPrototype");
         BunnyLook = GetLookFromPrototype("BunnyRenderPrototype");
         BoatLook = GetLookFromPrototype("BoatRenderPrototype");
@@ -62,14 +65,16 @@ public sealed class Bootstrap
     }
 
 
-    public static void SpawnBoat()
+    public static void SpawnBoat(float3 pos)
     {
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
 
+        
         Entity boat = entityManager.CreateEntity(BoatArchetype);
         entityManager.AddSharedComponentData(boat, BoatLook);
         entityManager.SetComponentData(boat, new Scale { Value = new float3(100.0f, 100.0f, 100.0f) });
-        entityManager.SetComponentData(boat, new Position { Value = new float3(0.0f, 0.5f, 0.0f) });
+        pos.y = 0.5f; //Make it float
+        entityManager.SetComponentData(boat, new Position { Value = pos });
         entityManager.SetComponentData(boat, new Rotation { Value = quaternion.identity });
         entityManager.SetComponentData(boat, new TurnRateComponent { TurnRate = 10 });
         entityManager.SetComponentData(boat, new VelocityComponent { Value = new float3(0, 0, 8) });
@@ -82,6 +87,7 @@ public sealed class Bootstrap
         var debugRender = new DebugRenderComponent { mesh = debugMesh, material = debugMaterial };
         entityManager.AddSharedComponentData(boat, debugRender);
     }
+
 
     public static void SpawnMeteorite()
     {
@@ -125,16 +131,19 @@ public sealed class Bootstrap
         */
     }
 
-    public static void SpawnIslands()
+    public static void SpawnIsland(float3 pos)
     {
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
+
+        float radius = 5;
 
         Entity island = entityManager.CreateEntity(IslandArchetype);
         entityManager.AddSharedComponentData(island, IslandLook);
         entityManager.SetComponentData(island, new Scale { Value = new float3(10.0f, 5.0f, 10.0f) });
-        entityManager.SetComponentData(island, new Position { Value = new float3(0.0f, 0.0f, 20.0f) });
+        pos.y = Random.Range(-radius*0.75f,0f);
+        entityManager.SetComponentData(island, new Position { Value = pos });
         entityManager.SetComponentData(island, new Rotation { Value = quaternion.identity });
-        float radius = 5;
+        VectorField.Get().AddIsland(pos, radius, 3.5f);
 
         var debugMesh = CreateCircleMesh(radius, 100, 0.25f);
         var debugMaterial = new Material(Shader.Find("Unlit/DebugShader"));
@@ -173,7 +182,7 @@ public sealed class Bootstrap
         }
     }
 
-    public static void SpawnGoal(float3 goalPosition, int type=0)
+    public static void SpawnGoal(float3 pos, int type=0)
     {
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
 
@@ -188,7 +197,7 @@ public sealed class Bootstrap
             entityManager.AddSharedComponentData(goal, BunnyLook);
             entityManager.SetComponentData(goal, new Scale { Value = new float3(50.0f, 50.0f, 50.0f) });
         }
-        entityManager.SetComponentData(goal, new Position { Value = goalPosition });
+        entityManager.SetComponentData(goal, new Position { Value = pos });
         entityManager.SetComponentData(goal, new Rotation { Value = quaternion.identity });
         float radius = 3;
         entityManager.SetComponentData(goal, new RadiusComponent { Value = radius });
@@ -212,11 +221,9 @@ public sealed class Bootstrap
 
     public static void NewGame()
     {
-        SpawnBoat();
+        SpawnLevel(1);
         SpawnMeteorite();
-        SpawnIslands();
         SpawnParticles();
-        SpawnGoal(new float3(-10, 0, 20));
         Time.timeScale = 1;
         GameObject.Find("GameStatusText").GetComponent<Text>().text = "";
     }
@@ -376,5 +383,28 @@ public sealed class Bootstrap
         var result = proto.GetComponent<RenderMeshProxy>().Value;
         Object.Destroy(proto);
         return result;
+    }
+
+    private static void SpawnLevel(int level)
+    {
+        Texture2D image = Resources.Load<Texture2D>("level" + level);
+        for (int i = 0; i < image.width; i++)
+        {
+            for (int j = 0; j < image.height; j++)
+            {
+                Color pixel = image.GetPixel(i, j);
+                if (pixel == Color.black) //Islands
+                {
+                    SpawnIsland(Utils.getCenterOfVectorArea(i,j));
+                } else if (pixel == Color.green) //Boat
+                {
+                    SpawnBoat(Utils.getCenterOfVectorArea(i, j));
+                } else if (pixel == Color.red) //Goal
+                {
+                    SpawnGoal(Utils.getCenterOfVectorArea(i, j));
+                }
+            }
+        }
+        
     }
 }

@@ -7,6 +7,7 @@ public class ButtonThing : MonoBehaviour
 {
 
     private bool waitingForClick = false;
+    private string currentPower = null;
 
     private void Start()
     {
@@ -29,17 +30,27 @@ public class ButtonThing : MonoBehaviour
                 // use the hitPoint to aim your cannon
                 //Debug.Log("hitPoint: " + hitPoint);
 
-                Debug.Log("Generating bunny");
                 var goalPosition = new float3(hitPoint.x, 0, hitPoint.z);
-                Bootstrap.SpawnGoal(goalPosition, 1);
+                if (currentPower == "bunny")
+                {
+                    Debug.Log("Generating bunny");
+                    Bootstrap.SpawnGoal(goalPosition, 1);
+                }
+                else if (currentPower == "whirlpool")
+                {
+                    Debug.Log("Generating whirlpool");
+                    VectorField.Get().AddWhirlpool(goalPosition, 10, true, 20);
+                }
             }
             waitingForClick = false;
+            currentPower = null;
         }
     }
 
-    public void OnClick()
+    public void OnClickPower(string buttonName)
     {
         waitingForClick = true;
+        currentPower = buttonName;
         Debug.Log("Waiting for click");
     }
 
