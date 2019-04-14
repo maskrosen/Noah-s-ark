@@ -29,7 +29,14 @@ public struct ParticleComponent : IComponentData
 {
     public float LifeTimeLeft;
 }
-    
+
+public struct WaveComponent : IComponentData
+{
+    public float Radius;
+    public float LifeTimeLeft;
+    public BlittableBool justSpawned;
+}
+
 public struct BoatComponent : IComponentData
 {
 }
