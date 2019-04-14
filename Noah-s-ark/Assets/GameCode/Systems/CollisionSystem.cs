@@ -37,12 +37,19 @@ public class CollisionSystem : ComponentSystem
         public ComponentDataArray<MeteoriteComponent> MeteoriteComponent;
     }
 
+    public struct GameStateData
+    {
+        public readonly int Length;
+        public ComponentDataArray<GameStateComponent> gamestate;
+    }
+
     public Text StatusText;
 
     [Inject] private GoalData goalData;
     [Inject] private BoatData boatData;
     [Inject] private IslandData islandData;
     [Inject] private MeteoriteData meteoriteData;
+    [Inject] private GameStateData gameStateData;
 
     public void SetupGameObjects()
     {
@@ -62,8 +69,11 @@ public class CollisionSystem : ComponentSystem
             {
                 if (Utils.IsCollidingCircleCircle(boatData.Position[i].Value, boatData.Radius[i].Value, goalData.Position[j].Value, goalData.Radius[j].Value))
                 {
+                    
                     Time.timeScale = 0;
                     StatusText.text = "You got pwnd in the butthole";
+                    
+                    GameObject.Find("btnNextLevel").GetComponent<Button>().interactable = true;
                 }
             }
 

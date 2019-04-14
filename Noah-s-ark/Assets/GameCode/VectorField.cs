@@ -9,7 +9,7 @@ public class VectorField
     /*
      * A 2D array of Vector2, stored as one for PERFORMANCE MAXIMUS. Access with field[i * Constants.VECTORFIELD_SIZE + j]
     */
-    public readonly Vector2[] field;
+    public readonly Vector2[] staticField;
 
     private Settings settings;
 
@@ -26,7 +26,7 @@ public class VectorField
         {
             for (int j = 0; j < Constants.VECTORFIELD_SIZE; j++)
             {
-                instance.field[i * Constants.VECTORFIELD_SIZE + j] = defaultVectorField(i - Constants.VECTORFIELD_SIZE / 2, j - Constants.VECTORFIELD_SIZE / 2);
+                instance.staticField[i * Constants.VECTORFIELD_SIZE + j] = defaultVectorField(i - Constants.VECTORFIELD_SIZE / 2, j - Constants.VECTORFIELD_SIZE / 2);
             }
         }
         instance.AddWhirlpool(new float3(30, 0, 30), 15, true, 30);
@@ -36,8 +36,25 @@ public class VectorField
     private static Vector2 defaultVectorField(float i, float j)
     {
         Vector2 v = new Vector2(0.1f, 2);
-        
         return v;
+    }
+
+    public void AddPushingRing(float3 pos, float str, float outerRadius, float innerRadius)
+    {
+        float x = Mathf.Clamp(pos.x + Constants.WORLD_VECTORFIELD_OFFSET, 0, Constants.VECTORFIELD_SIZE - 1);
+        float y = Mathf.Clamp(pos.z + Constants.WORLD_VECTORFIELD_OFFSET, 0, Constants.VECTORFIELD_SIZE - 1);
+
+        for (int i = 0; i < Constants.VECTORFIELD_SIZE; i++)
+        {
+            for (int j = 0; j < Constants.VECTORFIELD_SIZE; j++)
+            {
+                Vector2 toCenter = new Vector2(x, y) - new Vector2(i, j);
+                float distToCenter = Mathf.Clamp01(toCenter.magnitude / (outerRadius));
+
+                if (toCenter.magnitude > innerRadius && toCenter.magnitude < outerRadius)
+                    staticField[i * Constants.VECTORFIELD_SIZE + j] = Vector2.Lerp(-toCenter, staticField[i * Constants.VECTORFIELD_SIZE + j], Mathf.Sqrt(distToCenter));
+            }
+        }
     }
 
     public void AddWhirlpool(float3 pos, float str, bool clockwise, float eventHorizonRadius)
@@ -59,7 +76,7 @@ public class VectorField
                 Vector2 toCenter = new Vector2(x, y) - new Vector2(i, j);
 
                 float distToCenter = toCenter.magnitude / eventHorizonRadius;
-                field[i * Constants.VECTORFIELD_SIZE + j] = Vector2.Lerp(-v, field[i * Constants.VECTORFIELD_SIZE + j], Mathf.Sqrt(Mathf.Clamp01(distToCenter)));
+                staticField[i * Constants.VECTORFIELD_SIZE + j] = Vector2.Lerp(-v, staticField[i * Constants.VECTORFIELD_SIZE + j], Mathf.Sqrt(Mathf.Clamp01(distToCenter)));
             }
         }
     }
@@ -77,12 +94,11 @@ public class VectorField
                 float distToCenter = Mathf.Clamp01(toCenter.magnitude / (radius + ExtraAffectRadius));
 
                 if (toCenter.magnitude < radius)
-                    field[i * Constants.VECTORFIELD_SIZE + j] = Vector2.zero;
+                    staticField[i * Constants.VECTORFIELD_SIZE + j] = Vector2.zero;
                 else
-                    field[i * Constants.VECTORFIELD_SIZE + j] = Vector2.Lerp(-toCenter, field[i * Constants.VECTORFIELD_SIZE + j], Mathf.Sqrt(distToCenter));
+                    staticField[i * Constants.VECTORFIELD_SIZE + j] = Vector2.Lerp(-toCenter, staticField[i * Constants.VECTORFIELD_SIZE + j], Mathf.Sqrt(distToCenter));
             }
         }
-
     }
     
     public static VectorField Get()
@@ -96,7 +112,7 @@ public class VectorField
 
     private VectorField(Vector2[] field)
     {
-        this.field = field;
+        this.staticField = field;
     }
 
     private Vector2 lerpSample(Vector2 tr, Vector2 tl, Vector2 br, Vector2 bl, Vector2 pos01)
@@ -118,8 +134,6 @@ public class VectorField
 
         float ifrac = fi - i;
         float jfrac = fj - j;
-
-        //return field[i*Constants.VECTORFIELD_SIZE + j];
         
         Vector2 pos01;
         
@@ -173,11 +187,11 @@ public class VectorField
             d = Mathf.Clamp(j - 1, 0, Constants.VECTORFIELD_SIZE - 1);
         }
 
-        Vector2 urV = field[r * Constants.VECTORFIELD_SIZE + u];
-        Vector2 ulV = field[l * Constants.VECTORFIELD_SIZE + u];
+        Vector2 urV = staticField[r * Constants.VECTORFIELD_SIZE + u];
+        Vector2 ulV = staticField[l * Constants.VECTORFIELD_SIZE + u];
 
-        Vector2 drV = field[r * Constants.VECTORFIELD_SIZE + d];
-        Vector2 dlV = field[l * Constants.VECTORFIELD_SIZE + d];
+        Vector2 drV = staticField[r * Constants.VECTORFIELD_SIZE + d];
+        Vector2 dlV = staticField[l * Constants.VECTORFIELD_SIZE + d];
 
         Vector2 sample = lerpSample(urV, ulV, drV, dlV, pos01);
 

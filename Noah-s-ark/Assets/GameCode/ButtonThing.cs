@@ -134,6 +134,14 @@ public class ButtonThing : MonoBehaviour
         }
     }
 
+    public void OnClickNextLevel()
+    {
+        GameObject.Find("btnNextLevel").GetComponent<Button>().interactable = false;
+        var level = 2; //TODO: find gamestate!
+        Bootstrap.ClearGame();
+        Bootstrap.NewGame(level);
+    }
+
     public void OnWindClicked()
     {
 

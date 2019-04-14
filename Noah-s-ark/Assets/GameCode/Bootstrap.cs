@@ -45,12 +45,16 @@ public sealed class Bootstrap
 
     }
 
-    public static void NewGame()
+    public static void NewGame(int level = 1)
     {
-        SpawnLevel(1);
+        Debug.Log("Level: " + level);
+        SpawnLevel(level);
         EntitySpawner.SpawnParticles();
+
         Time.timeScale = 1;
         GameObject.Find("GameStatusText").GetComponent<Text>().text = "";
+
+        EntitySpawner.SpawnGameState(level);
     }
 
     private static Mesh CreateSphereMesh(float radius, int numberOfSides, float thickness)
@@ -117,6 +121,8 @@ public sealed class Bootstrap
     private static void SpawnLevel(int level)
     {
         Texture2D image = Resources.Load<Texture2D>("level" + level);
+        var widthFactor = Constants.MAX_WORLD_SIZE / image.width;
+        var heightFactor = Constants.MAX_WORLD_SIZE / image.height;
         for (int i = 0; i < image.width; i++)
         {
             for (int j = 0; j < image.height; j++)
@@ -124,13 +130,13 @@ public sealed class Bootstrap
                 Color pixel = image.GetPixel(i, j);
                 if (pixel == Color.black) //Islands
                 {
-                    EntitySpawner.SpawnIsland(Utils.getCenterOfVectorArea(i,j));
+                    EntitySpawner.SpawnIsland(Utils.getCenterOfVectorFieldArea(i*widthFactor,j*heightFactor));
                 } else if (pixel == Color.green) //Boat
                 {
-                    EntitySpawner.SpawnBoat(Utils.getCenterOfVectorArea(i, j));
+                    EntitySpawner.SpawnBoat(Utils.getCenterOfVectorFieldArea(i * widthFactor, j * heightFactor));
                 } else if (pixel == Color.red) //Goal
                 {
-                    EntitySpawner.SpawnGoal(Utils.getCenterOfVectorArea(i, j));
+                    EntitySpawner.SpawnGoal(Utils.getCenterOfVectorFieldArea(i * widthFactor, j * heightFactor));
                 }
             }
         }

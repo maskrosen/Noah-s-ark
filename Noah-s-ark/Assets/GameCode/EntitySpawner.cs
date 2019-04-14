@@ -11,6 +11,7 @@ public class EntitySpawner
     public static EntityArchetype GoalArchetype;
     public static EntityArchetype IslandArchetype;
     public static EntityArchetype MeteoriteArchetype;
+    public static EntityArchetype GameStateArchetype;
 
     public static RenderMesh FoxLook;
     public static RenderMesh BunnyLook;
@@ -28,6 +29,7 @@ public class EntitySpawner
         MeteoriteArchetype = entityManager.CreateArchetype(typeof(RadiusComponent), typeof(Position), typeof(VelocityComponent), typeof(Scale), typeof(MeteoriteComponent), typeof(Rotation), typeof(RotationVelocity));
         GoalArchetype = entityManager.CreateArchetype(typeof(RadiusComponent), typeof(Position), typeof(Rotation), typeof(Scale), typeof(GoalComponent));
         IslandArchetype = entityManager.CreateArchetype(typeof(RadiusComponent), typeof(Position), typeof(Rotation), typeof(Scale), typeof(IslandComponent));
+        GameStateArchetype = entityManager.CreateArchetype(typeof(GameStateComponent));
     }
 
     public static void InitializeWithScene()
@@ -176,7 +178,7 @@ public class EntitySpawner
         {
             Entity particle = entityManager.CreateEntity(WaterParticleArchetype);
             entityManager.AddSharedComponentData(particle, WaterParticleLook);
-            var position = random.NextFloat3() * 100 - Constants.HIGH_WORLD_EDGE;
+            var position = random.NextFloat3() * Constants.MAX_WORLD_SIZE - Constants.HIGH_WORLD_EDGE;
             position.y = 0;
             var velocity = random.NextFloat3() * 4f - 2;
             velocity.y = 0;
@@ -196,6 +198,13 @@ public class EntitySpawner
             entityManager.SetComponentData(particle, new VelocityComponent { Value = new float3(1, 0, 0) });
             entityManager.SetComponentData(particle, new ParticleComponent { LifeTimeLeft = lifeTime });
         }
+    }
+
+    public static void SpawnGameState(int level)
+    {
+        var entityManager = World.Active.GetOrCreateManager<EntityManager>();
+        Entity gameState = entityManager.CreateEntity(GameStateArchetype);
+        entityManager.AddComponentData(gameState, new GameStateComponent { currentLevel = level });
     }
 
     private static Mesh CreateCircleMesh(float radius, int numberOfSides, float thickness)
