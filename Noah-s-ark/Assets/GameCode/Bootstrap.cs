@@ -12,12 +12,14 @@ public sealed class Bootstrap
     public static EntityArchetype WaterParticleArchetype;
     public static EntityArchetype GoalArchetype;
     public static EntityArchetype IslandArchetype;
+    public static EntityArchetype MeteoriteArchetype;
 
     public static RenderMesh FoxLook;
     public static RenderMesh BunnyLook;
     public static RenderMesh BoatLook;
     public static RenderMesh WaterParticleLook;
     public static RenderMesh IslandLook;
+    public static RenderMesh MeteoriteLook;
 
     public static Settings Settings;
 
@@ -34,6 +36,7 @@ public sealed class Bootstrap
         WaterParticleArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(Scale), typeof(VelocityComponent), typeof(ParticleComponent));
         GoalArchetype = entityManager.CreateArchetype(typeof(CircleComponent), typeof(Position), typeof(Rotation), typeof(Scale), typeof(GoalComponent));
         IslandArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(Scale), typeof(IslandComponent));
+        MeteoriteArchetype = entityManager.CreateArchetype(typeof(Position), typeof(VelocityComponent), typeof(Scale), typeof(MeteoriteComponent));
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -49,6 +52,7 @@ public sealed class Bootstrap
         BoatLook = GetLookFromPrototype("BoatRenderPrototype");
         WaterParticleLook = GetLookFromPrototype("WaterParticleRenderPrototype");
         IslandLook = GetLookFromPrototype("IslandRenderPrototype");
+        MeteoriteLook = GetLookFromPrototype("MeteoriteRenderPrototype");
 
         World.Active.GetOrCreateManager<CollisionSystem>().SetupGameObjects();
         NewGame();
@@ -66,6 +70,28 @@ public sealed class Bootstrap
         entityManager.SetComponentData(boat, new Rotation { Value = quaternion.identity });
         entityManager.SetComponentData(boat, new TurnRateComponent { TurnRate = 10 });
         entityManager.SetComponentData(boat, new VelocityComponent { Value = new float3(0, 0, 8) });
+    }
+
+    public static void SpawnMeteorite()
+    {
+        var entityManager = World.Active.GetOrCreateManager<EntityManager>();
+
+        Entity meteorite = entityManager.CreateEntity(MeteoriteArchetype);
+        entityManager.AddSharedComponentData(meteorite, MeteoriteLook);
+        entityManager.SetComponentData(meteorite, new Scale { Value = new float3(0.05f, 0.05f, 0.05f) });
+        entityManager.SetComponentData(meteorite, new Position { Value = new float3(0.0f, -30f, 0.0f) });
+        entityManager.SetComponentData(meteorite, new VelocityComponent { Value = new float3(1f, -10f, 1f) });
+
+        /* Spawn a lot of meteorites */
+        var random = new Unity.Mathematics.Random(835483957);
+        for (int i = 0; i < 20; i++)
+        {
+            meteorite = entityManager.CreateEntity(MeteoriteArchetype);
+            entityManager.AddSharedComponentData(meteorite, MeteoriteLook);
+            entityManager.SetComponentData(meteorite, new Scale { Value = new float3(0.02f, 0.02f, 0.02f) });
+            entityManager.SetComponentData(meteorite, new Position { Value = new float3(0f, -30f, 0f) });
+            entityManager.SetComponentData(meteorite, new VelocityComponent { Value = new float3(0f, 0f, 0f) });
+        }
     }
 
     public static void SpawnIslands()
@@ -134,6 +160,7 @@ public sealed class Bootstrap
     {
 
         SpawnBoat();
+        SpawnMeteorite();
         SpawnIslands();
         SpawnParticles();
         SpawnGoal();

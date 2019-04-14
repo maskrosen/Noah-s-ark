@@ -73,6 +73,11 @@ public struct IslandComponent : IComponentData
 
 }
 
+public struct MeteoriteComponent : IComponentData
+{
+
+}
+
 
 public struct PlayerComponent : IComponentData
 {
