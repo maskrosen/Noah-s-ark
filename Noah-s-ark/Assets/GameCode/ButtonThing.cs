@@ -34,7 +34,7 @@ public class ButtonThing : MonoBehaviour
                 if (currentPower == "bunny")
                 {
                     Debug.Log("Generating bunny");
-                    Bootstrap.SpawnGoal(goalPosition, 1);
+                    EntitySpawner.SpawnGoal(goalPosition, 1);
                 }
                 else if (currentPower == "whirlpool")
                 {
@@ -45,7 +45,7 @@ public class ButtonThing : MonoBehaviour
                 else if (currentPower == "meteorite")
                 {
                     Debug.Log("Generating Meteorite");
-                    Bootstrap.SpawnMeteorite(goalPosition, 1);
+                    EntitySpawner.SpawnMeteorite(goalPosition, 1);
                 }
             }
             waitingForClick = false;
