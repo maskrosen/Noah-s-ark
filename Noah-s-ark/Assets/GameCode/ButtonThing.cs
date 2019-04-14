@@ -22,7 +22,6 @@ public class ButtonThing : MonoBehaviour
         powerCooldown.Add("bunny", 3f);
         powerCooldown.Add("meteorite", 5f);
         powerCooldown.Add("whirlpool", 3f);
-
     }
 
     private void Update()
