@@ -352,33 +352,6 @@ public sealed class Bootstrap
         return mesh;
     }
 
-    private static Mesh CreateCoolSphereMesh(int _detailLevel)
-    {
-        var vectors = new List<Vector3>();
-        var indices = new List<int>();
-
-        GeometryProvider.Icosahedron(vectors, indices);
-
-        for (var i = 0; i < _detailLevel; i++)
-        {
-            GeometryProvider.Subdivide(vectors, indices, true);
-        }
-
-
-        /// normalize vectors to "inflate" the icosahedron into a sphere.
-        for (var i = 0; i < vectors.Count; i++)
-        { 
-            vectors[i] = Vector3.Normalize(vectors[i]);
-        }
-
-        var mesh = new Mesh();
-        mesh.vertices = vectors.ToArray();
-        mesh.triangles = indices.ToArray();
-        mesh.normals = vectors.ToArray();
-
-        return mesh;
-    }
-
     private static RenderMesh GetLookFromPrototype(string protoName)
     {
         var proto = GameObject.Find(protoName);

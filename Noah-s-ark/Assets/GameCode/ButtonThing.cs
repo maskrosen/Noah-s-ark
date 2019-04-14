@@ -39,7 +39,8 @@ public class ButtonThing : MonoBehaviour
                 else if (currentPower == "whirlpool")
                 {
                     Debug.Log("Generating whirlpool");
-                    VectorField.Get().AddWhirlpool(goalPosition, 10, true, 20);
+                    bool clockwise = UnityEngine.Random.Range(0f, 1f) > 0.5;
+                    VectorField.Get().AddWhirlpool(goalPosition, 10, clockwise, 20);
                 }
             }
             waitingForClick = false;
