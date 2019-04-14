@@ -30,10 +30,12 @@ public sealed class Bootstrap
 
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
         
-        BoatArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(VelocityComponent), typeof(TurnRateComponent), typeof(Scale), typeof(BoatComponent));
+        BoatArchetype = entityManager.CreateArchetype(typeof(RadiusComponent), typeof(Position), typeof(Rotation), typeof(VelocityComponent), typeof(TurnRateComponent), typeof(Scale), typeof(BoatComponent));
         WaterParticleArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(Scale), typeof(VelocityComponent), typeof(ParticleComponent));
-        GoalArchetype = entityManager.CreateArchetype(typeof(CircleComponent), typeof(Position), typeof(Rotation), typeof(Scale), typeof(GoalComponent));
-        IslandArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(Scale), typeof(IslandComponent), typeof(CircleComponent));
+
+        GoalArchetype = entityManager.CreateArchetype(typeof(RadiusComponent), typeof(Position), typeof(Rotation), typeof(Scale), typeof(GoalComponent));
+        IslandArchetype = entityManager.CreateArchetype(typeof(RadiusComponent), typeof(Position), typeof(Rotation), typeof(Scale), typeof(IslandComponent));
+
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -62,31 +64,36 @@ public sealed class Bootstrap
         Entity boat = entityManager.CreateEntity(BoatArchetype);
         entityManager.AddSharedComponentData(boat, BoatLook);
         entityManager.SetComponentData(boat, new Scale { Value = new float3(100.0f, 100.0f, 100.0f) });
-        entityManager.SetComponentData(boat, new Position { Value = new float3(0.0f, 0.0f, 0.0f) });
+        entityManager.SetComponentData(boat, new Position { Value = new float3(0.0f, 0.5f, 0.0f) });
         entityManager.SetComponentData(boat, new Rotation { Value = quaternion.identity });
         entityManager.SetComponentData(boat, new TurnRateComponent { TurnRate = 10 });
         entityManager.SetComponentData(boat, new VelocityComponent { Value = new float3(0, 0, 8) });
+        float radius = 5;
+        entityManager.SetComponentData(boat, new RadiusComponent { Value = radius });
+
+
+        var debugMesh = CreateCircleMesh(radius, 100);
+        var debugMaterial = new Material(Shader.Find("Unlit/DebugShader"));
+        var debugRender = new DebugRenderComponent { mesh = debugMesh, material = debugMaterial };
+        entityManager.AddSharedComponentData(boat, debugRender);
     }
 
     public static void SpawnIslands()
     {
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
 
-        var size = new float3(20.0f, 10.0f, 15.0f);
-        var position = new float3(10.0f, 0.0f, 20.0f);
-
         Entity island = entityManager.CreateEntity(IslandArchetype);
         entityManager.AddSharedComponentData(island, IslandLook);
-        entityManager.SetComponentData(island, new Scale { Value = size });
-        entityManager.SetComponentData(island, new Position { Value = position });
+        entityManager.SetComponentData(island, new Scale { Value = new float3(10.0f, 5.0f, 10.0f) });
+        entityManager.SetComponentData(island, new Position { Value = new float3(0.0f, 0.0f, 20.0f) });
         entityManager.SetComponentData(island, new Rotation { Value = quaternion.identity });
-        float radius = 10;
-        entityManager.SetComponentData(island, new CircleComponent { Position = position, Radius = radius });
+        float radius = 5;
 
         var debugMesh = CreateCircleMesh(radius, 100);
         var debugMaterial = new Material(Shader.Find("Unlit/DebugShader"));
         var debugRender = new DebugRenderComponent { mesh = debugMesh, material = debugMaterial };
         entityManager.AddSharedComponentData(island, debugRender);
+        entityManager.SetComponentData(island, new RadiusComponent { Value = radius });
     }
 
     public static void SpawnParticles()
@@ -128,13 +135,20 @@ public sealed class Bootstrap
           entityManager.AddSharedComponentData(goal, BunnyLook);
           entityManager.SetComponentData(goal, new Scale { Value = new float3(100.0f, 100.0f, 100.0f) });
         */
-        var goalPosition = new float3(5, 0, 5);
+        var goalPosition = new float3(-10, 0, 20);
         Entity goal = entityManager.CreateEntity(GoalArchetype);
         entityManager.AddSharedComponentData(goal, FoxLook);
         entityManager.SetComponentData(goal, new Scale { Value = new float3(2000.0f, 2000.0f, 2000.0f) });
         entityManager.SetComponentData(goal, new Position { Value = goalPosition });
         entityManager.SetComponentData(goal, new Rotation { Value = quaternion.identity });
-        entityManager.SetComponentData(goal, new CircleComponent { Position = goalPosition, Radius = 5 });
+        float radius = 5;
+        entityManager.SetComponentData(goal, new RadiusComponent { Value = radius });
+
+        var debugMesh = CreateCircleMesh(radius, 100);
+        var debugMaterial = new Material(Shader.Find("Unlit/DebugShader"));
+        var debugRender = new DebugRenderComponent { mesh = debugMesh, material = debugMaterial };
+        entityManager.AddSharedComponentData(goal, debugRender);
+
     }
 
     public static void NewGame()

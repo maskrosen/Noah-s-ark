@@ -11,7 +11,6 @@ public class DebugRenderSystem : ComponentSystem
         public readonly int Length;
         public ComponentDataArray<Position> Position;
         public ComponentDataArray<Rotation> Rotation;
-        public ComponentDataArray<CircleComponent> Circle;
         [ReadOnly]
         public SharedComponentDataArray<DebugRenderComponent> DebugRender;
     }
@@ -31,7 +30,6 @@ public class DebugRenderSystem : ComponentSystem
             position.Value.y = 1;
             var rotation = debugData.Rotation[i];
             var debugRender = debugData.DebugRender[i];
-            var circle = debugData.Circle[i];
             
             Graphics.DrawMesh(
                 debugRender.mesh, position.Value, rotation.Value, debugRender.material, 0
