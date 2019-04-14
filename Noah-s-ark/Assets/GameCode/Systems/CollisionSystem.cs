@@ -33,7 +33,8 @@ public class CollisionSystem : ComponentSystem
     {
         public readonly int Length;
         public ComponentDataArray<Position> Position;
-        public ComponentDataArray<BoatComponent> MeteoriteComponent;
+        public ComponentDataArray<RadiusComponent> Radius;
+        public ComponentDataArray<MeteoriteComponent> MeteoriteComponent;
     }
 
     public Text StatusText;
@@ -80,6 +81,11 @@ public class CollisionSystem : ComponentSystem
             for (int k = 0; k < meteoriteData.Length; k++)
             {
                 //TODO: Do stuff
+                if (Utils.IsCollidingCircleSphere(boatData.Position[i].Value, boatData.Radius[i].Value, meteoriteData.Position[k].Value, meteoriteData.Radius[k].Value))
+                {
+                    Time.timeScale = 0;
+                    StatusText.text = "LOL YOU GOT BY A MeTeOrItE!!!";
+                }
             }
         }
     }
