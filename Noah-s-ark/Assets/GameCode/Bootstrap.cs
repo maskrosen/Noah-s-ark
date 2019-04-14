@@ -234,7 +234,7 @@ public sealed class Bootstrap
 
     public static void NewGame()
     {
-        SpawnLevel(2);
+        SpawnLevel(1);
         SpawnParticles();
         Time.timeScale = 1;
         GameObject.Find("GameStatusText").GetComponent<Text>().text = "";
