@@ -17,15 +17,19 @@ public class VectorField
     {
         instance = new VectorField(new Vector2[Constants.VECTORFIELD_SIZE * Constants.VECTORFIELD_SIZE]);
         instance.settings = settings;
+        Reset();
+    }
 
+    public static void Reset()
+    {
         for (int i = 0; i < Constants.VECTORFIELD_SIZE; i++)
         {
             for (int j = 0; j < Constants.VECTORFIELD_SIZE; j++)
             {
-                instance.field[i * Constants.VECTORFIELD_SIZE + j] = defaultVectorField(i - Constants.VECTORFIELD_SIZE/2, j - Constants.VECTORFIELD_SIZE / 2);
+                instance.field[i * Constants.VECTORFIELD_SIZE + j] = defaultVectorField(i - Constants.VECTORFIELD_SIZE / 2, j - Constants.VECTORFIELD_SIZE / 2);
             }
         }
-        instance.AddWhirlpool(new float3(30,0,30), 15, true, 30);
+        instance.AddWhirlpool(new float3(30, 0, 30), 15, true, 30);
         instance.AddWhirlpool(new float3(-30, 0, -30), 15, false, 30);
     }
 
