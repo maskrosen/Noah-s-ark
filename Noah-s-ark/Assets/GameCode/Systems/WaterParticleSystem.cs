@@ -89,7 +89,14 @@ public class WaterParticleSystem : ComponentSystem
             var normalizedRotaion = vel.normalized;
             var newVelocity = new float3(vel.x, 0, vel.y);
 
-            rotation.Value = Quaternion.LookRotation(newVelocity, Vector3.up);
+            if(Utils.Float3Magnitude(newVelocity) < 0.001f)
+            {
+                randomizePosition = true;
+            }
+            else
+            {
+                rotation.Value = Quaternion.LookRotation(newVelocity, Vector3.up);
+            }
 
             particleData.Velocity[i] = new VelocityComponent { Value = newVelocity };
             particleData.Particle[i] = particleComponent;

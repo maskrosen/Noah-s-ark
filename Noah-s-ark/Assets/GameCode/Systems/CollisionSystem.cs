@@ -29,11 +29,20 @@ public class CollisionSystem : ComponentSystem
         public ComponentDataArray<IslandComponent> IslandComponent;
     }
 
+    public struct MeteoriteData
+    {
+        public readonly int Length;
+        public ComponentDataArray<Position> Position;
+        public ComponentDataArray<RadiusComponent> Radius;
+        public ComponentDataArray<MeteoriteComponent> MeteoriteComponent;
+    }
+
     public Text StatusText;
 
     [Inject] private GoalData goalData;
     [Inject] private BoatData boatData;
     [Inject] private IslandData islandData;
+    [Inject] private MeteoriteData meteoriteData;
 
     public void SetupGameObjects()
     {
@@ -65,6 +74,17 @@ public class CollisionSystem : ComponentSystem
                 {
                     Time.timeScale = 0;
                     StatusText.text = "LOL YOU DIED!!!";
+                }
+            }
+
+            //For every meteorite
+            for (int k = 0; k < meteoriteData.Length; k++)
+            {
+                //TODO: Do stuff
+                if (Utils.IsCollidingCircleSphere(boatData.Position[i].Value, boatData.Radius[i].Value, meteoriteData.Position[k].Value, meteoriteData.Radius[k].Value))
+                {
+                    Time.timeScale = 0;
+                    StatusText.text = "LOL YOU GOT BY A MeTeOrItE!!!";
                 }
             }
         }

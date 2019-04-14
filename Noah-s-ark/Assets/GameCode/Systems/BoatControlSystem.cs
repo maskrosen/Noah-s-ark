@@ -64,7 +64,16 @@ public class BoatControlSystem : ComponentSystem
 
             boatData.Velocity[i] = new VelocityComponent { Value = newVelocity };
 
-            boatData.Rotation[i] = new Rotation { Value = Quaternion.LookRotation(newVelocity, Vector3.up) };
+            if (Utils.Float3Magnitude(newVelocity) < 0.001f)
+            {
+                //dont change rotation
+            }
+            else
+            {
+                boatData.Rotation[i] = new Rotation { Value = Quaternion.LookRotation(newVelocity, Vector3.up) };
+            }
+
+            
         }
     }
 }

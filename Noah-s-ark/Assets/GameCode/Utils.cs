@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Unity.Mathematics;
+using System;
 
 public class Utils
 {
@@ -25,5 +26,18 @@ public class Utils
         diffVector.y = 0; //Circle is 2d
         var distanceSq = Utils.Float3MagnitudeSq(diffVector);
         return (distanceSq < (radius1 + radius2) * (radius1 + radius2));
+    }
+
+    public static bool IsCollidingCircleSphere(float3 pos1, float radius1, float3 pos2, float radius2)
+    {
+        var diffVector = pos2 - pos1;
+        diffVector.y = 0; //Circle is 2d
+        var distanceSq = Utils.Float3MagnitudeSq(diffVector);
+        return (distanceSq < (radius1 + radius2) * (radius1 + radius2)) && Math.Abs(pos2.y) < radius2;
+    }
+
+    public static Vector3 getCenterOfVectorArea(int i, int j)
+    {
+        return new Vector3(i - (Constants.VECTORFIELD_SIZE / 2) + 0.5f, 0,j - (Constants.VECTORFIELD_SIZE / 2) + 0.5f);
     }
 }
