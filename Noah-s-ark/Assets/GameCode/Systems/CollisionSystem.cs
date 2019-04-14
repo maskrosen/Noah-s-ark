@@ -8,7 +8,8 @@ public class CollisionSystem : ComponentSystem
     public struct GoalData
     {
         public readonly int Length;
-        public ComponentDataArray<CircleComponent> Circle;
+        public ComponentDataArray<Position> Position;
+        public ComponentDataArray<RadiusComponent> Radius;
         public ComponentDataArray<GoalComponent> GoalComponent;
     }
 
@@ -16,6 +17,7 @@ public class CollisionSystem : ComponentSystem
     {
         public readonly int Length;
         public ComponentDataArray<Position> Position;
+        public ComponentDataArray<RadiusComponent> Radius;
         public ComponentDataArray<BoatComponent> BoatComponent;
     }
 
@@ -23,7 +25,8 @@ public class CollisionSystem : ComponentSystem
     {
         public readonly int Length;
         public ComponentDataArray<Position> Position;
-        public ComponentDataArray<BoatComponent> IslandComponent;
+        public ComponentDataArray<RadiusComponent> Radius;
+        public ComponentDataArray<IslandComponent> IslandComponent;
     }
 
     public struct MeteoriteData
@@ -56,14 +59,9 @@ public class CollisionSystem : ComponentSystem
             //For every goal
             for (int j = 0; j < goalData.Length; j++)
             {
-                
-                var boatPos = boatData.Position[i].Value;
-                var goalCircle = goalData.Circle[j];
-                var diffVector = boatPos - goalCircle.Position;
-                var distanceSq = Utils.Float3MagnitudeSq(diffVector);
-                if (distanceSq < goalCircle.Radius*goalCircle.Radius)
+                if (Utils.IsCollidingCircleCircle(boatData.Position[i].Value, boatData.Radius[i].Value, goalData.Position[j].Value, goalData.Radius[j].Value))
                 {
-                    Debug.Log("Goal reached!!!");
+                    Time.timeScale = 0;
                     StatusText.text = "You got pwnd in the butthole";
                 }
             }
@@ -71,7 +69,11 @@ public class CollisionSystem : ComponentSystem
             //For every island
             for (int j = 0; j < islandData.Length; j++)
             {
-                //TODO: Do stuff
+                if (Utils.IsCollidingCircleCircle(boatData.Position[i].Value, boatData.Radius[i].Value, islandData.Position[j].Value, islandData.Radius[j].Value))
+                {
+                    Time.timeScale = 0;
+                    StatusText.text = "LOL YOU DIED!!!";
+                }
             }
 
             //For every meteorite
