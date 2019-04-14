@@ -15,6 +15,7 @@ public sealed class Bootstrap
     public static EntityArchetype GoalArchetype;
     public static EntityArchetype IslandArchetype;
     public static EntityArchetype MeteoriteArchetype;
+    public static EntityArchetype GameStateArchetype;
 
     public static RenderMesh FoxLook;
     public static RenderMesh BunnyLook;
@@ -35,10 +36,10 @@ public sealed class Bootstrap
         
         BoatArchetype = entityManager.CreateArchetype(typeof(RadiusComponent), typeof(Position), typeof(Rotation), typeof(VelocityComponent), typeof(TurnRateComponent), typeof(Scale), typeof(BoatComponent));
         WaterParticleArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(Scale), typeof(VelocityComponent), typeof(ParticleComponent));
-
         MeteoriteArchetype = entityManager.CreateArchetype(typeof(RadiusComponent), typeof(Position), typeof(VelocityComponent), typeof(Scale), typeof(MeteoriteComponent), typeof(Rotation), typeof(RotationVelocity));
         GoalArchetype = entityManager.CreateArchetype(typeof(RadiusComponent), typeof(Position), typeof(Rotation), typeof(Scale), typeof(GoalComponent));
         IslandArchetype = entityManager.CreateArchetype(typeof(RadiusComponent), typeof(Position), typeof(Rotation), typeof(Scale), typeof(IslandComponent));
+        GameStateArchetype = entityManager.CreateArchetype(typeof(GameStateComponent));
 
     }
 
@@ -160,7 +161,7 @@ public sealed class Bootstrap
         {            
             Entity particle = entityManager.CreateEntity(WaterParticleArchetype);
             entityManager.AddSharedComponentData(particle, WaterParticleLook);
-            var position = random.NextFloat3() * 100 - Constants.HIGH_WORLD_EDGE;
+            var position = random.NextFloat3() * Constants.MAX_WORLD_SIZE - Constants.HIGH_WORLD_EDGE;
             position.y = 0;
             var velocity = random.NextFloat3() * 4f - 2;
             velocity.y = 0;
@@ -209,6 +210,7 @@ public sealed class Bootstrap
 
     }
 
+
     public static void ClearGame()
     {
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
@@ -221,13 +223,18 @@ public sealed class Bootstrap
 
     }
 
-    public static void NewGame()
+    public static void NewGame(int level = 1)
     {
-        SpawnLevel(2);
+        Debug.Log("Level: " + level);
+        SpawnLevel(level);
         SpawnMeteorite();
         SpawnParticles();
         Time.timeScale = 1;
         GameObject.Find("GameStatusText").GetComponent<Text>().text = "";
+
+        var entityManager = World.Active.GetOrCreateManager<EntityManager>();
+        Entity gameState = entityManager.CreateEntity(GameStateArchetype);
+        entityManager.AddComponentData(gameState, new GameStateComponent { currentLevel = 1 });
     }
 
     private static Mesh CreateCircleMesh(float radius, int numberOfSides, float thickness)

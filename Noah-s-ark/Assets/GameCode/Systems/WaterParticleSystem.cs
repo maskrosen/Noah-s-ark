@@ -61,7 +61,7 @@ public class WaterParticleSystem : ComponentSystem
 
             if (randomizePosition)
             {
-                position.Value = random.NextFloat3() * 100 - Constants.HIGH_WORLD_EDGE;
+                position.Value = random.NextFloat3() * Constants.MAX_WORLD_SIZE - Constants.HIGH_WORLD_EDGE;
                 position.Value.y = 0;
                 particleComponent.LifeTimeLeft = Constants.PARTICLE_LIFETIME;
             }

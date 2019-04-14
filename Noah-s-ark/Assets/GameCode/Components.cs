@@ -116,3 +116,8 @@ public struct BlittableBool : IEquatable<BlittableBool>
     }
 }
 
+public struct GameStateComponent : IComponentData
+{
+    public int currentLevel;
+}
+
