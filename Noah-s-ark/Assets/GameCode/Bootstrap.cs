@@ -33,7 +33,7 @@ public sealed class Bootstrap
         BoatArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(VelocityComponent), typeof(TurnRateComponent), typeof(Scale), typeof(BoatComponent));
         WaterParticleArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(Scale), typeof(VelocityComponent), typeof(ParticleComponent));
         GoalArchetype = entityManager.CreateArchetype(typeof(CircleComponent), typeof(Position), typeof(Rotation), typeof(Scale), typeof(GoalComponent));
-        IslandArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(Scale), typeof(IslandComponent));
+        IslandArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(Scale), typeof(IslandComponent), typeof(CircleComponent));
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -80,6 +80,13 @@ public sealed class Bootstrap
         entityManager.SetComponentData(island, new Scale { Value = size });
         entityManager.SetComponentData(island, new Position { Value = position });
         entityManager.SetComponentData(island, new Rotation { Value = quaternion.identity });
+        float radius = 10;
+        entityManager.SetComponentData(island, new CircleComponent { Position = position, Radius = radius });
+
+        var debugMesh = CreateCircleMesh(radius, 100);
+        var debugMaterial = new Material(Shader.Find("Unlit/DebugShader"));
+        var debugRender = new DebugRenderComponent { mesh = debugMesh, material = debugMaterial };
+        entityManager.AddSharedComponentData(island, debugRender);
     }
 
     public static void SpawnParticles()
@@ -137,6 +144,47 @@ public sealed class Bootstrap
         SpawnIslands();
         SpawnParticles();
         SpawnGoal();
+    }
+
+    private static Mesh CreateCircleMesh(float radius, int numberOfSides)
+    {
+        //verticies
+        var verticies = new Vector3[numberOfSides];
+        float x;
+        float y;
+        for (int i = 0; i < numberOfSides; i++)
+        {
+            x = radius * Mathf.Sin((2 * Mathf.PI * i) / numberOfSides);
+            y = radius * Mathf.Cos((2 * Mathf.PI * i) / numberOfSides);
+            verticies[i] = new Vector3(x, 0, y);
+        }
+
+
+        //triangles
+        var triangles = new int[numberOfSides * 3];
+        int triangleIndex = 0;
+        for (int i = 0; i < (numberOfSides - 2); i++)
+        {
+            triangles[triangleIndex] = 0;
+            triangles[triangleIndex + 1] = i + 1;
+            triangles[triangleIndex + 2] = i + 2;
+            triangleIndex += 3;
+        }
+
+        //normals
+        var normals = new Vector3[numberOfSides];
+        for (int i = 0; i < verticies.Length; i++)
+        {
+            normals[i] = -Vector3.forward;
+        }
+
+        var mesh = new Mesh();
+        //initialise
+        mesh.vertices = verticies;
+        mesh.triangles = triangles;
+        mesh.normals = normals;
+
+        return mesh;
     }
 
     private static RenderMesh GetLookFromPrototype(string protoName)
