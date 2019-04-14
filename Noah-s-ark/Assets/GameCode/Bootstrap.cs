@@ -58,14 +58,16 @@ public sealed class Bootstrap
     }
 
 
-    public static void SpawnBoat()
+    public static void SpawnBoat(float3 pos)
     {
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
 
+        
         Entity boat = entityManager.CreateEntity(BoatArchetype);
         entityManager.AddSharedComponentData(boat, BoatLook);
         entityManager.SetComponentData(boat, new Scale { Value = new float3(100.0f, 100.0f, 100.0f) });
-        entityManager.SetComponentData(boat, new Position { Value = new float3(0.0f, 0.5f, 0.0f) });
+        pos.y = 0.5f; //Make it float
+        entityManager.SetComponentData(boat, new Position { Value = pos });
         entityManager.SetComponentData(boat, new Rotation { Value = quaternion.identity });
         entityManager.SetComponentData(boat, new TurnRateComponent { TurnRate = 10 });
         entityManager.SetComponentData(boat, new VelocityComponent { Value = new float3(0, 0, 8) });
@@ -127,7 +129,7 @@ public sealed class Bootstrap
         }
     }
 
-    public static void SpawnGoal(float3 goalPosition, int type=0)
+    public static void SpawnGoal(float3 pos, int type=0)
     {
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
 
@@ -142,7 +144,7 @@ public sealed class Bootstrap
             entityManager.AddSharedComponentData(goal, BunnyLook);
             entityManager.SetComponentData(goal, new Scale { Value = new float3(50.0f, 50.0f, 50.0f) });
         }
-        entityManager.SetComponentData(goal, new Position { Value = goalPosition });
+        entityManager.SetComponentData(goal, new Position { Value = pos });
         entityManager.SetComponentData(goal, new Rotation { Value = quaternion.identity });
         float radius = 3;
         entityManager.SetComponentData(goal, new RadiusComponent { Value = radius });
@@ -254,10 +256,10 @@ public sealed class Bootstrap
                     SpawnIsland(Utils.getCenterOfVectorArea(i,j));
                 } else if (pixel == Color.green) //Boat
                 {
-                    SpawnBoat();
+                    SpawnBoat(Utils.getCenterOfVectorArea(i, j));
                 } else if (pixel == Color.red) //Goal
                 {
-                    SpawnGoal(new float3(-10, 0, 20));
+                    SpawnGoal(Utils.getCenterOfVectorArea(i, j));
                 }
             }
         }
