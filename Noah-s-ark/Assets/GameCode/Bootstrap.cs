@@ -26,7 +26,6 @@ public sealed class Bootstrap
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     public static void Initialize()
     {
-        VectorField.Initialize();
 
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
         
@@ -43,6 +42,9 @@ public sealed class Bootstrap
         Settings = settingsGO?.GetComponent<Settings>();
         if (!Settings)
             return;
+
+        VectorField.Initialize(Settings);
+
 
         FoxLook = GetLookFromPrototype("FoxRenderPrototype");
         BunnyLook = GetLookFromPrototype("BunnyRenderPrototype");
