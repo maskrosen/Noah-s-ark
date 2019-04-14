@@ -6,6 +6,7 @@ using Unity.Transforms;
 using Unity.Rendering;
 using Unity.Mathematics;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public sealed class Bootstrap
 {
@@ -118,13 +119,14 @@ public sealed class Bootstrap
     {
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
 
+        float radius = 5;
+
         Entity island = entityManager.CreateEntity(IslandArchetype);
         entityManager.AddSharedComponentData(island, IslandLook);
         entityManager.SetComponentData(island, new Scale { Value = new float3(10.0f, 5.0f, 10.0f) });
+        pos.y = Random.Range(-radius*0.75f,0f);
         entityManager.SetComponentData(island, new Position { Value = pos });
         entityManager.SetComponentData(island, new Rotation { Value = quaternion.identity });
-        float radius = 5;
-
         VectorField.Get().AddIsland(pos, radius, 3.5f);
 
         var debugMesh = CreateCircleMesh(radius, 100, 0.25f);
