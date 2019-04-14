@@ -79,14 +79,14 @@ public sealed class Bootstrap
         entityManager.AddSharedComponentData(boat, debugRender);
     }
 
-    public static void SpawnIslands()
+    public static void SpawnIsland(float3 pos)
     {
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
 
         Entity island = entityManager.CreateEntity(IslandArchetype);
         entityManager.AddSharedComponentData(island, IslandLook);
         entityManager.SetComponentData(island, new Scale { Value = new float3(10.0f, 5.0f, 10.0f) });
-        entityManager.SetComponentData(island, new Position { Value = new float3(0.0f, 0.0f, 20.0f) });
+        entityManager.SetComponentData(island, new Position { Value = pos });
         entityManager.SetComponentData(island, new Rotation { Value = quaternion.identity });
         float radius = 5;
 
@@ -159,10 +159,8 @@ public sealed class Bootstrap
 
     public static void NewGame()
     {
-        SpawnBoat();
-        SpawnIslands();
+        SpawnLevel(1);
         SpawnParticles();
-        SpawnGoal();
         Time.timeScale = 1;
         GameObject.Find("GameStatusText").GetComponent<Text>().text = "";
     }
@@ -214,5 +212,28 @@ public sealed class Bootstrap
         var result = proto.GetComponent<RenderMeshProxy>().Value;
         Object.Destroy(proto);
         return result;
+    }
+
+    private static void SpawnLevel(int level)
+    {
+        Texture2D image = Resources.Load<Texture2D>("level" + level);
+        for (int i = 0; i < image.width; i++)
+        {
+            for (int j = 0; j < image.height; j++)
+            {
+                Color pixel = image.GetPixel(i, j);
+                if (pixel == Color.black) //Islands
+                {
+                    SpawnIsland(Utils.getCenterOfVectorArea(i,j));
+                } else if (pixel == Color.green) //Boat
+                {
+                    SpawnBoat();
+                } else if (pixel == Color.red) //Goal
+                {
+                    SpawnGoal();
+                }
+            }
+        }
+        
     }
 }
