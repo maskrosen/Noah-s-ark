@@ -1,12 +1,9 @@
 ﻿using Unity.Entities;
 using Unity.Mathematics;
-using Unity.Transforms;
 using UnityEngine;
 
 public class WindSystem : ComponentSystem
 {
-
-
     public struct WindData
     {
         public readonly int Length;
@@ -35,7 +32,6 @@ public class WindSystem : ComponentSystem
 
     protected override void OnUpdate()
     {
-
         float dt = Time.deltaTime;
         var settings = Bootstrap.Settings;
 
@@ -78,14 +74,6 @@ public class WindSystem : ComponentSystem
             var wind = PostUpdateCommands.CreateEntity(WindArchetype);
             PostUpdateCommands.SetComponent(wind, new WindComponent { Velocity = new Vector2(diff.x, diff.z)});
             PostUpdateCommands.SetComponent(wind, new TimerComponent { Duration = Constants.WIND_POWERUP_TIME, DeleteOnEnd = true });
-
-        }
-
-        for (int i = 0; i < windData.Length; i++)
-        {
-
-            
-            
         }
     }
 }
