@@ -261,7 +261,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Btn4
+  m_Text: 
 --- !u!222 &64448143
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -476,8 +476,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 442107752}
-        m_MethodName: OnClick
+      - m_Target: {fileID: 0}
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -630,8 +630,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 505682146}
-        m_MethodName: OnClick
+      - m_Target: {fileID: 0}
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1324,7 +1324,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Btn3
+  m_Text: 
 --- !u!222 &890925147
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1573,22 +1573,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 436711192b6a29b4c9a5cde81248ca57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerRotationSpeed: 10
-  playerRotation:
-    x: 0
-    y: 0
-    z: 0
-  playerSpaceDistance: 15
-  playerOffset: 15
-  distanceBetweenPlayers: 30
-  playerStandingSpots: 3
-  botTurnCooldown: 1
-  bulletSpeed: 50
-  bulletLifeDuration: 1
-  cameraSpeed: 3
-  cameraDistance: 10
+  camPositionSpeed: 3
+  camRotationSpeed: 3
+  cameraDistance: 25
   cameraHeight: 20
-  debugMode: 1
+  debugMode: 0
 --- !u!4 &1098306336
 Transform:
   m_ObjectHideFlags: 0
@@ -1673,7 +1662,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Btn2
+  m_Text: 
 --- !u!222 &1126225445
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1752,7 +1741,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Btn1
+  m_Text: 
 --- !u!222 &1200834322
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2085,8 +2074,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1555753981}
-        m_MethodName: OnClick
+      - m_Target: {fileID: 0}
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2227,8 +2216,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1688947938}
-        m_MethodName: OnClick
+      - m_Target: {fileID: 0}
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2674,9 +2663,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Btn5
-
-    Generate bunny'
+  m_Text: 
 --- !u!222 &2138600183
 CanvasRenderer:
   m_ObjectHideFlags: 0

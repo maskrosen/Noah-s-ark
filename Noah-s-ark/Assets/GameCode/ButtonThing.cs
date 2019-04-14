@@ -30,15 +30,8 @@ public class ButtonThing : MonoBehaviour
                 //Debug.Log("hitPoint: " + hitPoint);
 
                 Debug.Log("Generating bunny");
-                var entityManager = World.Active.GetOrCreateManager<EntityManager>();
-                Entity goal = entityManager.CreateEntity(Bootstrap.GoalArchetype);
-                entityManager.AddSharedComponentData(goal, Bootstrap.BunnyLook);
                 var goalPosition = new float3(hitPoint.x, 0, hitPoint.z);
-
-                entityManager.SetComponentData(goal, new Scale { Value = new float3(50.0f, 50.0f, 50.0f) });
-                entityManager.SetComponentData(goal, new Position { Value = goalPosition });
-                entityManager.SetComponentData(goal, new Rotation { Value = quaternion.identity });
-                entityManager.SetComponentData(goal, new RadiusComponent { Value = 5 });
+                Bootstrap.SpawnGoal(goalPosition, 1);
             }
             waitingForClick = false;
         }

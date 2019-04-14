@@ -73,7 +73,7 @@ public sealed class Bootstrap
         entityManager.SetComponentData(boat, new RadiusComponent { Value = radius });
 
 
-        var debugMesh = CreateCircleMesh(radius, 100);
+        var debugMesh = CreateCircleMesh(radius, 100, 0.25f);
         var debugMaterial = new Material(Shader.Find("Unlit/DebugShader"));
         var debugRender = new DebugRenderComponent { mesh = debugMesh, material = debugMaterial };
         entityManager.AddSharedComponentData(boat, debugRender);
@@ -90,7 +90,7 @@ public sealed class Bootstrap
         entityManager.SetComponentData(island, new Rotation { Value = quaternion.identity });
         float radius = 5;
 
-        var debugMesh = CreateCircleMesh(radius, 100);
+        var debugMesh = CreateCircleMesh(radius, 100, 0.25f);
         var debugMaterial = new Material(Shader.Find("Unlit/DebugShader"));
         var debugRender = new DebugRenderComponent { mesh = debugMesh, material = debugMaterial };
         entityManager.AddSharedComponentData(island, debugRender);
@@ -127,20 +127,27 @@ public sealed class Bootstrap
         }
     }
 
-    public static void SpawnGoal()
+    public static void SpawnGoal(float3 goalPosition, int type=0)
     {
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
 
-        var goalPosition = new float3(-10, 0, 20);
         Entity goal = entityManager.CreateEntity(GoalArchetype);
-        entityManager.AddSharedComponentData(goal, FoxLook);
-        entityManager.SetComponentData(goal, new Scale { Value = new float3(2000.0f, 2000.0f, 2000.0f) });
+        if (type == 0)
+        {
+            entityManager.AddSharedComponentData(goal, FoxLook);
+            entityManager.SetComponentData(goal, new Scale { Value = new float3(1700.0f, 1700.0f, 1700.0f) });
+        }
+        else
+        {
+            entityManager.AddSharedComponentData(goal, BunnyLook);
+            entityManager.SetComponentData(goal, new Scale { Value = new float3(50.0f, 50.0f, 50.0f) });
+        }
         entityManager.SetComponentData(goal, new Position { Value = goalPosition });
         entityManager.SetComponentData(goal, new Rotation { Value = quaternion.identity });
-        float radius = 5;
+        float radius = 3;
         entityManager.SetComponentData(goal, new RadiusComponent { Value = radius });
 
-        var debugMesh = CreateCircleMesh(radius, 100);
+        var debugMesh = CreateCircleMesh(radius, 100, 0.25f);
         var debugMaterial = new Material(Shader.Find("Unlit/DebugShader"));
         var debugRender = new DebugRenderComponent { mesh = debugMesh, material = debugMaterial };
         entityManager.AddSharedComponentData(goal, debugRender);
@@ -165,10 +172,10 @@ public sealed class Bootstrap
         GameObject.Find("GameStatusText").GetComponent<Text>().text = "";
     }
 
-    private static Mesh CreateCircleMesh(float radius, int numberOfSides)
+    private static Mesh CreateCircleMesh(float radius, int numberOfSides, float thickness)
     {
         //verticies
-        var verticies = new Vector3[numberOfSides];
+        var verticies = new Vector3[numberOfSides * 2];
         float x;
         float y;
         for (int i = 0; i < numberOfSides; i++)
@@ -177,21 +184,41 @@ public sealed class Bootstrap
             y = radius * Mathf.Cos((2 * Mathf.PI * i) / numberOfSides);
             verticies[i] = new Vector3(x, 0, y);
         }
+        for (int i = 0; i < numberOfSides; i++)
+        {
+            x = (radius - thickness) * Mathf.Sin((2 * Mathf.PI * i) / numberOfSides);
+            y = (radius - thickness) * Mathf.Cos((2 * Mathf.PI * i) / numberOfSides);
+            verticies[numberOfSides + i] = new Vector3(x, 0, y);
+        }
 
 
         //triangles
-        var triangles = new int[numberOfSides * 3];
+        var triangles = new int[numberOfSides * 6 + 6];
         int triangleIndex = 0;
-        for (int i = 0; i < (numberOfSides - 2); i++)
+        for (int i = 0; i < (numberOfSides - 1); i++)
         {
-            triangles[triangleIndex] = 0;
+            triangles[triangleIndex] = i;
             triangles[triangleIndex + 1] = i + 1;
-            triangles[triangleIndex + 2] = i + 2;
-            triangleIndex += 3;
+            triangles[triangleIndex + 2] = numberOfSides + i;
+
+            triangles[triangleIndex + 3] = numberOfSides + i;
+            triangles[triangleIndex + 4] = i + 1;
+            triangles[triangleIndex + 5] = numberOfSides + i + 1;
+
+            triangleIndex += 6;
         }
 
+        //Add the bit triangles to connect the edges
+        triangles[triangleIndex] = numberOfSides - 1;
+        triangles[triangleIndex + 1] = 0;
+        triangles[triangleIndex + 2] = numberOfSides*2 -1;
+
+        triangles[triangleIndex + 3] = numberOfSides*2 -1;
+        triangles[triangleIndex + 4] = 0;
+        triangles[triangleIndex + 5] = numberOfSides;
+
         //normals
-        var normals = new Vector3[numberOfSides];
+        var normals = new Vector3[numberOfSides *2];
         for (int i = 0; i < verticies.Length; i++)
         {
             normals[i] = -Vector3.forward;
@@ -230,7 +257,7 @@ public sealed class Bootstrap
                     SpawnBoat();
                 } else if (pixel == Color.red) //Goal
                 {
-                    SpawnGoal();
+                    SpawnGoal(new float3(-10, 0, 20));
                 }
             }
         }
