@@ -201,6 +201,8 @@ public sealed class Bootstrap
         {
             entityManager.DestroyEntity(e);
         }
+        VectorField.Reset();
+
     }
 
     public static void NewGame()
