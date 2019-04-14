@@ -127,17 +127,24 @@ public sealed class Bootstrap
         }
     }
 
-    public static void SpawnGoal()
+    public static void SpawnGoal(float3 goalPosition, int type=0)
     {
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
 
-        var goalPosition = new float3(-10, 0, 20);
         Entity goal = entityManager.CreateEntity(GoalArchetype);
-        entityManager.AddSharedComponentData(goal, FoxLook);
-        entityManager.SetComponentData(goal, new Scale { Value = new float3(2000.0f, 2000.0f, 2000.0f) });
+        if (type == 0)
+        {
+            entityManager.AddSharedComponentData(goal, FoxLook);
+            entityManager.SetComponentData(goal, new Scale { Value = new float3(1700.0f, 1700.0f, 1700.0f) });
+        }
+        else
+        {
+            entityManager.AddSharedComponentData(goal, BunnyLook);
+            entityManager.SetComponentData(goal, new Scale { Value = new float3(50.0f, 50.0f, 50.0f) });
+        }
         entityManager.SetComponentData(goal, new Position { Value = goalPosition });
         entityManager.SetComponentData(goal, new Rotation { Value = quaternion.identity });
-        float radius = 5;
+        float radius = 3;
         entityManager.SetComponentData(goal, new RadiusComponent { Value = radius });
 
         var debugMesh = CreateCircleMesh(radius, 100, 0.25f);
@@ -162,7 +169,7 @@ public sealed class Bootstrap
         SpawnBoat();
         SpawnIslands();
         SpawnParticles();
-        SpawnGoal();
+        SpawnGoal(new float3(-10, 0, 20));
         Time.timeScale = 1;
         GameObject.Find("GameStatusText").GetComponent<Text>().text = "";
     }

@@ -51,7 +51,7 @@ public class CollisionSystem : ComponentSystem
             //For every goal
             for (int j = 0; j < goalData.Length; j++)
             {
-                if (false && Utils.IsCollidingCircleCircle(boatData.Position[i].Value, boatData.Radius[i].Value, goalData.Position[j].Value, goalData.Radius[j].Value))
+                if (Utils.IsCollidingCircleCircle(boatData.Position[i].Value, boatData.Radius[i].Value, goalData.Position[j].Value, goalData.Radius[j].Value))
                 {
                     Time.timeScale = 0;
                     StatusText.text = "You got pwnd in the butthole";
