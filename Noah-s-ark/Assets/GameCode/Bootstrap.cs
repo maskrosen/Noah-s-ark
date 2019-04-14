@@ -62,7 +62,7 @@ public sealed class Bootstrap
         Entity boat = entityManager.CreateEntity(BoatArchetype);
         entityManager.AddSharedComponentData(boat, BoatLook);
         entityManager.SetComponentData(boat, new Scale { Value = new float3(100.0f, 100.0f, 100.0f) });
-        entityManager.SetComponentData(boat, new Position { Value = new float3(0.0f, 0.0f, 0.0f) });
+        entityManager.SetComponentData(boat, new Position { Value = new float3(0.0f, 0.5f, 0.0f) });
         entityManager.SetComponentData(boat, new Rotation { Value = quaternion.identity });
         entityManager.SetComponentData(boat, new TurnRateComponent { TurnRate = 10 });
         entityManager.SetComponentData(boat, new VelocityComponent { Value = new float3(0, 0, 8) });
