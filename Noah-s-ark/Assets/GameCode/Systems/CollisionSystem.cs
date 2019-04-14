@@ -53,7 +53,7 @@ public class CollisionSystem : ComponentSystem
             {
                 if (false && Utils.IsCollidingCircleCircle(boatData.Position[i].Value, boatData.Radius[i].Value, goalData.Position[j].Value, goalData.Radius[j].Value))
                 {
-                    Debug.Log("Goal reached!!!");
+                    Time.timeScale = 0;
                     StatusText.text = "You got pwnd in the butthole";
                 }
             }
@@ -63,7 +63,7 @@ public class CollisionSystem : ComponentSystem
             {
                 if (Utils.IsCollidingCircleCircle(boatData.Position[i].Value, boatData.Radius[i].Value, islandData.Position[j].Value, islandData.Radius[j].Value))
                 {
-                    Debug.Log("LOL YOU DIED!!!");
+                    Time.timeScale = 0;
                     StatusText.text = "LOL YOU DIED!!!";
                 }
             }

@@ -54,7 +54,5 @@ public class ButtonThing : MonoBehaviour
     {
         Bootstrap.ClearGame();
         Bootstrap.NewGame();
-        
-        Debug.Log("Restarting game");
     }
 }

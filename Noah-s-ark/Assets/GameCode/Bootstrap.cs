@@ -5,6 +5,7 @@ using Unity.Entities;
 using Unity.Transforms;
 using Unity.Rendering;
 using Unity.Mathematics;
+using UnityEngine.UI;
 
 public sealed class Bootstrap
 {
@@ -68,7 +69,7 @@ public sealed class Bootstrap
         entityManager.SetComponentData(boat, new Rotation { Value = quaternion.identity });
         entityManager.SetComponentData(boat, new TurnRateComponent { TurnRate = 10 });
         entityManager.SetComponentData(boat, new VelocityComponent { Value = new float3(0, 0, 8) });
-        float radius = 5;
+        float radius = 4;
         entityManager.SetComponentData(boat, new RadiusComponent { Value = radius });
 
 
@@ -130,11 +131,6 @@ public sealed class Bootstrap
     {
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
 
-        /*
-          // When we have multiple levels, the bunny can be used as well. scale with 100
-          entityManager.AddSharedComponentData(goal, BunnyLook);
-          entityManager.SetComponentData(goal, new Scale { Value = new float3(100.0f, 100.0f, 100.0f) });
-        */
         var goalPosition = new float3(-10, 0, 20);
         Entity goal = entityManager.CreateEntity(GoalArchetype);
         entityManager.AddSharedComponentData(goal, FoxLook);
@@ -167,6 +163,8 @@ public sealed class Bootstrap
         SpawnIslands();
         SpawnParticles();
         SpawnGoal();
+        Time.timeScale = 1;
+        GameObject.Find("GameStatusText").GetComponent<Text>().text = "";
     }
 
     private static Mesh CreateCircleMesh(float radius, int numberOfSides)
