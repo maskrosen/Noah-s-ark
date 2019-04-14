@@ -95,7 +95,7 @@ public sealed class Bootstrap
         var random = new Unity.Mathematics.Random(835483957);
 
         /* Spawn a lot of meteorites */
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 1; i++)
         {
             Entity meteorite = entityManager.CreateEntity(MeteoriteArchetype);
             entityManager.AddSharedComponentData(meteorite, MeteoriteLook);
