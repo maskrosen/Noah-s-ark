@@ -49,4 +49,21 @@ public class ButtonThing : MonoBehaviour
         waitingForClick = true;
         Debug.Log("Waiting for click");
     }
+
+    public void OnClickRestart()
+    {
+        Bootstrap.ClearGame();
+        Bootstrap.NewGame();
+    }
+
+    public void OnClickFF()
+    {
+        if (Time.timeScale > 1)
+        {
+            Time.timeScale = 1;
+        } else
+        {
+            Time.timeScale = 4;
+        }
+    }
 }
