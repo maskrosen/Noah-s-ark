@@ -5,12 +5,17 @@ using Unity.Mathematics;
 
 public struct VelocityComponent : IComponentData
 {
-    public float3 Value; 
+    public float3 Value;
 }
 
 public struct TurnRateComponent : IComponentData
 {
     public float TurnRate;
+}
+
+public struct RotationVelocity : IComponentData
+{
+    public float3 Value;
 }
 
 public struct TimerComponent : IComponentData
@@ -39,7 +44,13 @@ public struct IslandComponent : IComponentData
 
 }
 
+public struct MeteoriteComponent : IComponentData
+{
+
+}
+
 public struct RadiusComponent : IComponentData
+
 {
     public float Value;
 }
