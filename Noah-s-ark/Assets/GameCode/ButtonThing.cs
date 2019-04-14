@@ -1,6 +1,5 @@
-﻿using Unity.Entities;
+﻿using System.Collections.Generic;
 using Unity.Mathematics;
-using Unity.Transforms;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,13 +8,34 @@ public class ButtonThing : MonoBehaviour
 
     private bool waitingForClick = false;
     private string currentPower = null;
+    private Dictionary<string, float> lastPowerUse;
+    private Dictionary<string, float> powerCooldown;
 
     private void Start()
     {
+        var settings = Bootstrap.Settings;
+
+        lastPowerUse = new Dictionary<string, float>();
+        powerCooldown = new Dictionary<string, float>();
+        lastPowerUse.Add(Constants.BUNNY_BTN, -100000f);
+        lastPowerUse.Add(Constants.METEORITE_BTN, -100000f);
+        lastPowerUse.Add(Constants.WHIRLPOOL_BTN, -100000f);
+
+        powerCooldown.Add(Constants.BUNNY_BTN, settings.bunnyCD);
+        powerCooldown.Add(Constants.METEORITE_BTN, settings.meteoriteCD);
+        powerCooldown.Add(Constants.WHIRLPOOL_BTN, settings.whirlpoolCD);
+
     }
 
     private void Update()
     {
+        /* Get updated CD settings. */
+        var settings = Bootstrap.Settings;
+        powerCooldown[Constants.BUNNY_BTN] = settings.bunnyCD;
+        powerCooldown[Constants.METEORITE_BTN] = settings.meteoriteCD;
+        powerCooldown[Constants.WHIRLPOOL_BTN] = settings.whirlpoolCD;
+
+        /* Handle the click. */
         if (waitingForClick && Input.GetMouseButtonDown(0))
         {
             // this creates a horizontal plane passing through this object's center
@@ -30,23 +50,39 @@ public class ButtonThing : MonoBehaviour
                 var hitPoint = ray.GetPoint(distance);
                 // use the hitPoint to aim your cannon
                 //Debug.Log("hitPoint: " + hitPoint);
+                
+                float currentTime = Time.realtimeSinceStartup;
+                bool powerOnCooldown = currentTime - lastPowerUse[currentPower] < powerCooldown[currentPower];
 
-                var goalPosition = new float3(hitPoint.x, 0, hitPoint.z);
-                if (currentPower == "bunny")
+                /* == If you want to debug the CD feature. ==
+                Debug.Log("CurrentTime: " + currentTime);
+                Debug.Log("Power On Cooldown: " + powerOnCooldown);
+                Debug.Log("Time elapsed: " + (currentTime - lastPowerUse[currentPower]));
+                Debug.Log("Power CD: " + powerCooldown[currentPower]);
+                */
+
+
+                if (!powerOnCooldown)
                 {
-                    Debug.Log("Generating bunny");
-                    Bootstrap.SpawnGoal(goalPosition, 1);
-                }
-                else if (currentPower == "whirlpool")
-                {
-                    Debug.Log("Generating whirlpool");
-                    bool clockwise = UnityEngine.Random.Range(0f, 1f) > 0.5;
-                    VectorField.Get().AddWhirlpool(goalPosition, 10, clockwise, 20);
-                }
-                else if (currentPower == "meteorite")
-                {
-                    Debug.Log("Generating Meteorite");
-                    Bootstrap.SpawnMeteorite(goalPosition, 1);
+                    var goalPosition = new float3(hitPoint.x, 0, hitPoint.z);
+                    if (currentPower == Constants.BUNNY_BTN)
+                    {
+                        Debug.Log("Generating bunny");
+                        EntitySpawner.SpawnGoal(goalPosition, 1);
+                    }
+                    else if (currentPower == Constants.WHIRLPOOL_BTN)
+                    {
+                        Debug.Log("Generating whirlpool");
+                        bool clockwise = UnityEngine.Random.Range(0f, 1f) > 0.5;
+                        VectorField.Get().AddWhirlpool(goalPosition, 10, clockwise, 20);
+                    }
+                    else if (currentPower == Constants.METEORITE_BTN)
+                    {
+                        Debug.Log("Generating Meteorite");
+                        EntitySpawner.SpawnMeteorite(goalPosition, 1);
+                    }
+
+                    lastPowerUse[currentPower] = Time.realtimeSinceStartup;
                 }
             }
             waitingForClick = false;

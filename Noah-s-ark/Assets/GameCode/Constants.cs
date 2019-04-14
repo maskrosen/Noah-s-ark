@@ -13,4 +13,8 @@ public class Constants
     public const float PARTICLE_LIFETIME = 60;
     public const float WIND_POWERUP_TIME = 10;
     public const float WIND_POWERUP_SPEED = 15;
+
+    public const string BUNNY_BTN = "bunny";
+    public const string METEORITE_BTN = "meteorite";
+    public const string WHIRLPOOL_BTN = "whirlpool";
 }
