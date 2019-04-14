@@ -14,21 +14,29 @@ public class ButtonThing : MonoBehaviour
 
     private void Start()
     {
-        float time_of_origin = Time.realtimeSinceStartup;
+        var settings = Bootstrap.Settings;
+
         lastPowerUse = new Dictionary<string, float>();
         powerCooldown = new Dictionary<string, float>();
-        lastPowerUse.Add("bunny", -100000f);
-        lastPowerUse.Add("meteorite", -100000f);
-        lastPowerUse.Add("whirlpool", -100000f);
+        lastPowerUse.Add(Constants.BUNNY_BTN, -100000f);
+        lastPowerUse.Add(Constants.METEORITE_BTN, -100000f);
+        lastPowerUse.Add(Constants.WHIRLPOOL_BTN, -100000f);
 
-        powerCooldown.Add("bunny", 3f);
-        powerCooldown.Add("meteorite", 5f);
-        powerCooldown.Add("whirlpool", 3f);
+        powerCooldown.Add(Constants.BUNNY_BTN, settings.bunnyCD);
+        powerCooldown.Add(Constants.METEORITE_BTN, settings.meteoriteCD);
+        powerCooldown.Add(Constants.WHIRLPOOL_BTN, settings.whirlpoolCD);
 
     }
 
     private void Update()
     {
+        /* Get updated CD settings. */
+        var settings = Bootstrap.Settings;
+        powerCooldown[Constants.BUNNY_BTN] = settings.bunnyCD;
+        powerCooldown[Constants.METEORITE_BTN] = settings.meteoriteCD;
+        powerCooldown[Constants.WHIRLPOOL_BTN] = settings.whirlpoolCD;
+
+        /* Handle the click. */
         if (waitingForClick && Input.GetMouseButtonDown(0))
         {
             // this creates a horizontal plane passing through this object's center
@@ -58,18 +66,18 @@ public class ButtonThing : MonoBehaviour
                 if (!powerOnCooldown)
                 {
                     var goalPosition = new float3(hitPoint.x, 0, hitPoint.z);
-                    if (currentPower == "bunny")
+                    if (currentPower == Constants.BUNNY_BTN)
                     {
                         Debug.Log("Generating bunny");
                         Bootstrap.SpawnGoal(goalPosition, 1);
                     }
-                    else if (currentPower == "whirlpool")
+                    else if (currentPower == Constants.WHIRLPOOL_BTN)
                     {
                         Debug.Log("Generating whirlpool");
                         bool clockwise = UnityEngine.Random.Range(0f, 1f) > 0.5;
                         VectorField.Get().AddWhirlpool(goalPosition, 10, clockwise, 20);
                     }
-                    else if (currentPower == "meteorite")
+                    else if (currentPower == Constants.METEORITE_BTN)
                     {
                         Debug.Log("Generating Meteorite");
                         Bootstrap.SpawnMeteorite(goalPosition, 1);
