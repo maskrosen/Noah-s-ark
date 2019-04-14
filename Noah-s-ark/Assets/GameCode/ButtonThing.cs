@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ButtonThing : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class ButtonThing : MonoBehaviour
     private string currentPower = null;
     private Dictionary<string, float> lastPowerUse;
     private Dictionary<string, float> powerCooldown;
+    private Dictionary<string, string> buttonGameObjectNames;
 
     private void Start()
     {
@@ -16,6 +18,8 @@ public class ButtonThing : MonoBehaviour
 
         lastPowerUse = new Dictionary<string, float>();
         powerCooldown = new Dictionary<string, float>();
+        buttonGameObjectNames = new Dictionary<string, string>();
+
         lastPowerUse.Add(Constants.BUNNY_BTN, -100000f);
         lastPowerUse.Add(Constants.METEORITE_BTN, -100000f);
         lastPowerUse.Add(Constants.WHIRLPOOL_BTN, -100000f);
@@ -23,6 +27,10 @@ public class ButtonThing : MonoBehaviour
         powerCooldown.Add(Constants.BUNNY_BTN, settings.bunnyCD);
         powerCooldown.Add(Constants.METEORITE_BTN, settings.meteoriteCD);
         powerCooldown.Add(Constants.WHIRLPOOL_BTN, settings.whirlpoolCD);
+
+        buttonGameObjectNames.Add(Constants.BUNNY_BTN, "btn4");
+        buttonGameObjectNames.Add(Constants.METEORITE_BTN, "btn2");
+        buttonGameObjectNames.Add(Constants.WHIRLPOOL_BTN, "btn3");
 
     }
 
@@ -87,6 +95,19 @@ public class ButtonThing : MonoBehaviour
             waitingForClick = false;
             currentPower = null;
         }
+
+        updateButtonCooldowns();
+    }
+
+    public void updateButtonCooldowns()
+    {
+        foreach (KeyValuePair<string, string> item in buttonGameObjectNames)
+        {
+            float currentTime = Time.realtimeSinceStartup;
+            bool powerOnCooldown = currentTime - lastPowerUse[item.Key] < powerCooldown[item.Key];
+            GameObject.Find(item.Value).GetComponent<Button>().interactable = !powerOnCooldown;
+        }
+            
     }
 
     public void OnClickPower(string buttonName)

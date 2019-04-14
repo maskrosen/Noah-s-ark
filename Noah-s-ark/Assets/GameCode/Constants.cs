@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Constants
 {
@@ -17,4 +18,5 @@ public class Constants
     public const string BUNNY_BTN = "bunny";
     public const string METEORITE_BTN = "meteorite";
     public const string WHIRLPOOL_BTN = "whirlpool";
+
 }
