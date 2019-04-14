@@ -36,7 +36,7 @@ public sealed class Bootstrap
         WaterParticleArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(Scale), typeof(VelocityComponent), typeof(ParticleComponent));
         GoalArchetype = entityManager.CreateArchetype(typeof(CircleComponent), typeof(Position), typeof(Rotation), typeof(Scale), typeof(GoalComponent));
         IslandArchetype = entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(Scale), typeof(IslandComponent));
-        MeteoriteArchetype = entityManager.CreateArchetype(typeof(Position), typeof(VelocityComponent), typeof(Scale), typeof(MeteoriteComponent));
+        MeteoriteArchetype = entityManager.CreateArchetype(typeof(Position), typeof(VelocityComponent), typeof(Scale), typeof(MeteoriteComponent), typeof(Rotation), typeof(RotationVelocity));
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -75,15 +75,17 @@ public sealed class Bootstrap
     public static void SpawnMeteorite()
     {
         var entityManager = World.Active.GetOrCreateManager<EntityManager>();
+        var random = new Unity.Mathematics.Random(835483957);
 
         Entity meteorite = entityManager.CreateEntity(MeteoriteArchetype);
         entityManager.AddSharedComponentData(meteorite, MeteoriteLook);
         entityManager.SetComponentData(meteorite, new Scale { Value = new float3(0.05f, 0.05f, 0.05f) });
         entityManager.SetComponentData(meteorite, new Position { Value = new float3(0.0f, -30f, 0.0f) });
         entityManager.SetComponentData(meteorite, new VelocityComponent { Value = new float3(1f, -10f, 1f) });
+        entityManager.SetComponentData(meteorite, new Rotation { Value = Quaternion.identity });
+        entityManager.SetComponentData(meteorite, new RotationVelocity { Value = random.NextFloat3() * 300 * new float3(0f, 1f, 0f) - new float3(0f, 150f, 0f)});
 
         /* Spawn a lot of meteorites */
-        var random = new Unity.Mathematics.Random(835483957);
         for (int i = 0; i < 20; i++)
         {
             meteorite = entityManager.CreateEntity(MeteoriteArchetype);
@@ -91,6 +93,8 @@ public sealed class Bootstrap
             entityManager.SetComponentData(meteorite, new Scale { Value = new float3(0.02f, 0.02f, 0.02f) });
             entityManager.SetComponentData(meteorite, new Position { Value = new float3(0f, -30f, 0f) });
             entityManager.SetComponentData(meteorite, new VelocityComponent { Value = new float3(0f, 0f, 0f) });
+            entityManager.SetComponentData(meteorite, new Rotation { Value = Quaternion.identity });
+            entityManager.SetComponentData(meteorite, new RotationVelocity { Value = random.NextFloat3() * 300 * new float3(0f, 1f, 0f) - new float3(0f, 150f, 0f) });
         }
     }
 
