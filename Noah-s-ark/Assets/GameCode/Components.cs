@@ -39,6 +39,30 @@ public struct IslandComponent : IComponentData
 
 }
 
+public struct WindComponent : IComponentData
+{
+    public Vector2 Velocity;
+}
+
+public struct DragGestureComponent : IComponentData
+{
+    public Vector3 ClickPosition;
+    public Vector3 ReleasePosition;
+    public int Button;
+}
+
+public struct MouseButtonDownComponent : IComponentData
+{
+    public Vector3 MousePosition;
+    public int Button;
+}
+
+public struct MouseButtonUpComponent : IComponentData
+{
+    public Vector3 MousePosition;
+    public int Button;
+}
+
 public struct RadiusComponent : IComponentData
 {
     public float Value;
@@ -46,8 +70,8 @@ public struct RadiusComponent : IComponentData
 
 public struct DebugRenderComponent : ISharedComponentData
 {
-    public Mesh mesh;
-    public Material material;
+    public Mesh Mesh;
+    public Material Material;
 }
 
 public struct BlittableBool : IEquatable<BlittableBool>

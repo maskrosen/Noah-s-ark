@@ -26,9 +26,9 @@ public class TimerSystem : ComponentSystem
 
             var timer = timerData.Timer[i];
 
-            timer.CurrentTime -= dt;
+            timer.CurrentTime += dt;
 
-            if (timer.CurrentTime <= 0)
+            if (timer.CurrentTime >= timer.Duration)
             {
                 if (timer.DeleteOnEnd)
                     PostUpdateCommands.DestroyEntity(timerData.Entities[i]);

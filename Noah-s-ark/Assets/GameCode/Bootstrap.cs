@@ -37,6 +37,7 @@ public sealed class Bootstrap
         GoalArchetype = entityManager.CreateArchetype(typeof(RadiusComponent), typeof(Position), typeof(Rotation), typeof(Scale), typeof(GoalComponent));
         IslandArchetype = entityManager.CreateArchetype(typeof(RadiusComponent), typeof(Position), typeof(Rotation), typeof(Scale), typeof(IslandComponent));
 
+
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -54,9 +55,11 @@ public sealed class Bootstrap
         IslandLook = GetLookFromPrototype("IslandRenderPrototype");
 
         World.Active.GetOrCreateManager<CollisionSystem>().SetupGameObjects();
+        World.Active.GetOrCreateManager<InputSystem>().Init();
+        World.Active.GetOrCreateManager<WindSystem>().Init();
+
         NewGame();
     }
-
 
     public static void SpawnBoat()
     {
@@ -75,7 +78,7 @@ public sealed class Bootstrap
 
         var debugMesh = CreateCircleMesh(radius, 100, 0.25f);
         var debugMaterial = new Material(Shader.Find("Unlit/DebugShader"));
-        var debugRender = new DebugRenderComponent { mesh = debugMesh, material = debugMaterial };
+        var debugRender = new DebugRenderComponent { Mesh = debugMesh, Material = debugMaterial };
         entityManager.AddSharedComponentData(boat, debugRender);
     }
 
@@ -92,7 +95,7 @@ public sealed class Bootstrap
 
         var debugMesh = CreateCircleMesh(radius, 100, 0.25f);
         var debugMaterial = new Material(Shader.Find("Unlit/DebugShader"));
-        var debugRender = new DebugRenderComponent { mesh = debugMesh, material = debugMaterial };
+        var debugRender = new DebugRenderComponent { Mesh = debugMesh, Material = debugMaterial };
         entityManager.AddSharedComponentData(island, debugRender);
         entityManager.SetComponentData(island, new RadiusComponent { Value = radius });
     }
@@ -149,7 +152,7 @@ public sealed class Bootstrap
 
         var debugMesh = CreateCircleMesh(radius, 100, 0.25f);
         var debugMaterial = new Material(Shader.Find("Unlit/DebugShader"));
-        var debugRender = new DebugRenderComponent { mesh = debugMesh, material = debugMaterial };
+        var debugRender = new DebugRenderComponent { Mesh = debugMesh, Material = debugMaterial };
         entityManager.AddSharedComponentData(goal, debugRender);
 
     }

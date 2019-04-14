@@ -59,4 +59,9 @@ public class ButtonThing : MonoBehaviour
             Time.timeScale = 4;
         }
     }
+
+    public void OnWindClicked()
+    {
+
+    }
 }
