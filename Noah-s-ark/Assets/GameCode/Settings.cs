@@ -24,5 +24,7 @@ public class Settings : MonoBehaviour
     public float cameraDistance = 25f;
     public float cameraHeight = 15f;
 
+    public bool debugMode = true;
+
 
 }
