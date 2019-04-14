@@ -31,12 +31,8 @@ public class CameraSystem : ComponentSystem
 
         for (int i = 0; i < cameraData.Length; i++)
         {
-
-            var x = cameraData.BoatPosition[i].Value.x;
-            var y = cameraData.BoatPosition[i].Value.y;
-            var z = cameraData.BoatPosition[i].Value.z;
-            
-            var boatPos = new Vector3(x, y, z);
+            var b = cameraData.BoatPosition[i].Value;
+            var boatPos = new Vector3(b.x, b.y, b.z);
             var rotationVector = ((Quaternion)(cameraData.Rotation[i].Value)).normalized * Vector3.back;
 
             /* 
@@ -60,16 +56,14 @@ public class CameraSystem : ComponentSystem
             //Camera.main.transform.position = new Vector3(20, y + 10, z + 12);
 
             /* Third person view from behind the boat. */
-            var newPos = rotationVector * settings.cameraDistance + Vector3.up * settings.cameraHeight;
-            Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, newPos, Time.deltaTime * settings.cameraSpeed);
+            var newPos = boatPos + rotationVector * settings.cameraDistance + Vector3.up * settings.cameraHeight;
+            Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, newPos, Time.deltaTime * settings.camPositionSpeed);
 
             var oldRot = Camera.main.transform.rotation;
-            var lookAtVector = boatPos;
-            lookAtVector.z *= 1f;
 
-            Camera.main.transform.LookAt(lookAtVector);
+            Camera.main.transform.LookAt(boatPos);
             var newRot = Camera.main.transform.rotation;
-            Camera.main.transform.rotation = Quaternion.Slerp(oldRot, newRot, Time.deltaTime * settings.cameraSpeed);
+            Camera.main.transform.rotation = Quaternion.Slerp(oldRot, newRot, Time.deltaTime * settings.camRotationSpeed);
 
 
             /* GENERAL SETTING: 
