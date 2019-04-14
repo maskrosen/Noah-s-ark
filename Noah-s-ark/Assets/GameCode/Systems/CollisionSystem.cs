@@ -26,11 +26,19 @@ public class CollisionSystem : ComponentSystem
         public ComponentDataArray<BoatComponent> IslandComponent;
     }
 
+    public struct MeteoriteData
+    {
+        public readonly int Length;
+        public ComponentDataArray<Position> Position;
+        public ComponentDataArray<BoatComponent> MeteoriteComponent;
+    }
+
     public Text StatusText;
 
     [Inject] private GoalData goalData;
     [Inject] private BoatData boatData;
-    [Inject] private BoatData islandData;
+    [Inject] private IslandData islandData;
+    [Inject] private MeteoriteData meteoriteData;
 
     public void SetupGameObjects()
     {
@@ -62,6 +70,12 @@ public class CollisionSystem : ComponentSystem
 
             //For every island
             for (int j = 0; j < islandData.Length; j++)
+            {
+                //TODO: Do stuff
+            }
+
+            //For every meteorite
+            for (int k = 0; k < meteoriteData.Length; k++)
             {
                 //TODO: Do stuff
             }
